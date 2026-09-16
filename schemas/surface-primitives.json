@@ -1,0 +1,65 @@
+{
+  "Text@1.0": {
+    "type": "object",
+    "required": [
+      "text"
+    ],
+    "properties": {
+      "text": {
+        "minLength": 1,
+        "maxLength": 8000,
+        "type": "string"
+      },
+      "tone": {
+        "type": "string"
+      }
+    }
+  },
+  "Section@1.0": {
+    "type": "object",
+    "required": [
+      "body"
+    ],
+    "properties": {
+      "heading": {
+        "maxLength": 300,
+        "type": "string"
+      },
+      "body": {
+        "minLength": 1,
+        "maxLength": 8000,
+        "type": "string"
+      }
+    }
+  },
+  "RecordTable@1.0": {
+    "type": "object",
+    "required": [
+      "columns",
+      "records"
+    ],
+    "properties": {
+      "columns": {
+        "minItems": 1,
+        "maxItems": 20,
+        "type": "array",
+        "items": {
+          "minLength": 1,
+          "maxLength": 100,
+          "type": "string"
+        }
+      },
+      "records": {
+        "minItems": 1,
+        "maxItems": 100,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "patternProperties": {
+            "^(.*)$": {}
+          }
+        }
+      }
+    }
+  }
+}

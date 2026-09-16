@@ -1,0 +1,111 @@
+{
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Skill name using lowercase letters, numbers, dots, underscores, or hyphens. Becomes the soul directory name."
+    },
+    "body": {
+      "type": "string",
+      "description": "Markdown skill body (instructions/content). Required unless confirm is set."
+    },
+    "frontmatter": {
+      "type": "object",
+      "required": [
+        "name",
+        "description"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 64,
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "version": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        },
+        "ownership": {
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "owners"
+          ],
+          "properties": {
+            "owners": {
+              "minItems": 1,
+              "type": "array",
+              "items": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "teamId"
+                ],
+                "properties": {
+                  "teamId": {
+                    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+                    "description": "Permanent Team UUID.",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "shares": {
+              "type": "array",
+              "items": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "teamId",
+                  "access"
+                ],
+                "properties": {
+                  "teamId": {
+                    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+                    "description": "Permanent Team UUID.",
+                    "type": "string"
+                  },
+                  "access": {
+                    "type": "string",
+                    "enum": [
+                      "view",
+                      "use",
+                      "edit"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "YAML frontmatter. name must match the Skill name and description is required. Required unless confirm is set. Unknown benign fields are allowed; underscore-prefixed and authority-grant fields are forbidden."
+    },
+    "confirm": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Token returned by the audit call. Omit it to audit; pass it back — after showing the operator the report and getting their agreement — to perform the write. Content arguments are ignored when this is set, because the audited version is what gets written."
+    }
+  }
+}

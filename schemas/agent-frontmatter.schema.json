@@ -1,0 +1,269 @@
+{
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "id": {
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "type": "string"
+    },
+    "label": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "domain": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "description": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "model": {
+      "minLength": 1,
+      "pattern": "^\\S+$",
+      "type": "string"
+    },
+    "autonomy": {
+      "type": "string",
+      "enum": [
+        "full",
+        "supervised",
+        "approval-required",
+        "manual"
+      ]
+    },
+    "modelPolicy": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "residency": {
+          "minLength": 1,
+          "maxLength": 64,
+          "type": "string"
+        },
+        "dataRetention": {
+          "type": "string",
+          "enum": [
+            "none",
+            "zero_retention",
+            "provider_default"
+          ]
+        },
+        "allowTraining": {
+          "type": "boolean"
+        },
+        "maxLatencyMs": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "sensitive": {
+          "type": "boolean"
+        }
+      }
+    },
+    "capabilityRestrictions": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "tools": {
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "allow": {
+              "type": "array",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "deny": {
+              "type": "array",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "allowMutating": {
+              "type": "boolean"
+            }
+          }
+        },
+        "skills": {
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "allow": {
+              "type": "array",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "deny": {
+              "type": "array",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              }
+            }
+          }
+        },
+        "records": {
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "actions": {
+              "additionalProperties": false,
+              "type": "object",
+              "properties": {
+                "allow": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "list",
+                      "search",
+                      "read",
+                      "create",
+                      "update",
+                      "delete"
+                    ]
+                  }
+                },
+                "deny": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "list",
+                      "search",
+                      "read",
+                      "create",
+                      "update",
+                      "delete"
+                    ]
+                  }
+                }
+              }
+            },
+            "resourceTypes": {
+              "type": "array",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              }
+            }
+          }
+        },
+        "resourceTypes": {
+          "additionalProperties": false,
+          "type": "object",
+          "properties": {
+            "actions": {
+              "additionalProperties": false,
+              "type": "object",
+              "properties": {
+                "allow": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "list",
+                      "read",
+                      "create",
+                      "update"
+                    ]
+                  }
+                },
+                "deny": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "list",
+                      "read",
+                      "create",
+                      "update"
+                    ]
+                  }
+                }
+              }
+            },
+            "names": {
+              "type": "array",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ownership": {
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "owners"
+      ],
+      "properties": {
+        "owners": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "teamId"
+            ],
+            "properties": {
+              "teamId": {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+                "description": "Permanent Team UUID.",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "shares": {
+          "type": "array",
+          "items": {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "teamId",
+              "access"
+            ],
+            "properties": {
+              "teamId": {
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+                "description": "Permanent Team UUID.",
+                "type": "string"
+              },
+              "access": {
+                "type": "string",
+                "enum": [
+                  "view",
+                  "use",
+                  "edit"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "placeholder": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "suggestions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
