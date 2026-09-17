@@ -1,0 +1,779 @@
+{
+  "create_resource_type": {
+    "type": "object",
+    "required": [
+      "name",
+      "schema"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Resource type name (e.g. 'ticket'). Lowercase, alphanumeric + hyphens."
+      },
+      "schema": {
+        "type": "string",
+        "minLength": 1,
+        "description": "JSON Schema as a YAML string. For a link field, use exactly x-links: { target: \"customer\" }, where \"customer\" is an existing Resource type name."
+      }
+    }
+  },
+  "list_resource_types": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "resource_type_schema": {
+    "type": "object",
+    "required": [
+      "name"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Resource type name."
+      }
+    }
+  },
+  "skill_create": {
+    "type": "object",
+    "required": [
+      "name"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Skill name using lowercase letters, numbers, dots, underscores, or hyphens. Becomes the soul directory name."
+      },
+      "body": {
+        "type": "string",
+        "description": "Markdown skill body (instructions/content). Required unless confirm is set."
+      },
+      "frontmatter": {
+        "type": "object",
+        "required": [
+          "name",
+          "description"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 64,
+            "pattern": "^[a-z0-9][a-z0-9._-]*$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "category": {
+            "type": "string",
+            "maxLength": 64,
+            "pattern": "^[a-z0-9][a-z0-9._-]*$"
+          },
+          "version": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "ownership": {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "owners"
+            ],
+            "properties": {
+              "owners": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "teamId"
+                  ],
+                  "properties": {
+                    "teamId": {
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+                      "description": "Permanent Team UUID.",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "shares": {
+                "type": "array",
+                "items": {
+                  "additionalProperties": false,
+                  "type": "object",
+                  "required": [
+                    "teamId",
+                    "access"
+                  ],
+                  "properties": {
+                    "teamId": {
+                      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+                      "description": "Permanent Team UUID.",
+                      "type": "string"
+                    },
+                    "access": {
+                      "type": "string",
+                      "enum": [
+                        "view",
+                        "use",
+                        "edit"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "YAML frontmatter. name must match the Skill name and description is required. Required unless confirm is set. Unknown benign fields are allowed; underscore-prefixed and authority-grant fields are forbidden."
+      },
+      "confirm": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Token returned by the audit call. Omit it to audit; pass it back — after showing the operator the report and getting their agreement — to perform the write. Content arguments are ignored when this is set, because the audited version is what gets written."
+      }
+    }
+  },
+  "skill_list": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "agent_create": {
+    "type": "object",
+    "required": [
+      "name",
+      "body"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Agent name (kebab-case, e.g. 'task-planner'). Becomes the soul directory name."
+      },
+      "body": {
+        "type": "string",
+        "description": "Markdown system-prompt body."
+      },
+      "frontmatter": {
+        "type": "object",
+        "description": "Optional frontmatter. Allowed keys: label, domain, description, model, autonomy (full|supervised|approval-required|manual), modelPolicy, capabilityRestrictions, placeholder (string[]), suggestions (string[]). Use capabilityRestrictions to set server-enforced Tool, Skill, Record, and Resource type limits such as read-only access or a named set of Skills this Agent may load."
+      },
+      "onExisting": {
+        "type": "string",
+        "enum": [
+          "keep",
+          "update"
+        ],
+        "description": "The user's decision when an Agent already holds this name or label. Omit on the first attempt; the Tool then reports the collision. Ask the user once, then re-call with 'keep' to leave the existing Agent untouched or 'update' to replace its body and frontmatter. Never ask the same question twice."
+      }
+    }
+  },
+  "agent_get": {
+    "type": "object",
+    "required": [
+      "name"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Agent name."
+      }
+    }
+  },
+  "agent_list": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "surface_component_create": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "slug",
+      "version",
+      "description",
+      "propsSchema",
+      "events",
+      "examples",
+      "targets"
+    ],
+    "properties": {
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*$"
+      },
+      "version": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": {
+        "type": "string",
+        "minLength": 1
+      },
+      "propsSchema": {
+        "type": "object",
+        "description": "JSON Schema for this component's props, and nothing else. Its own keywords are type, required and properties. `examples`, `events`, `targets`, `views` and `code` are siblings of propsSchema at the top level of this call — never keys inside it, even though `examples` is also a JSON Schema keyword."
+      },
+      "events": {
+        "type": "array",
+        "description": "Every event the view can emit. Required: pass [] when the component is display-only.",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "description",
+            "inputSchema"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "inputSchema": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "examples": {
+        "type": "array",
+        "description": "Complete example prop objects, each valid against propsSchema. A top-level field, not the JSON Schema `examples` keyword inside propsSchema.",
+        "minItems": 1
+      },
+      "targets": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "channel",
+            "surface"
+          ],
+          "properties": {
+            "channel": {
+              "enum": [
+                "web",
+                "slack",
+                "github"
+              ]
+            },
+            "surface": {
+              "enum": [
+                "chat",
+                "message",
+                "modal",
+                "comment",
+                "check-run"
+              ]
+            }
+          }
+        }
+      },
+      "views": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "default": {
+            "type": "object",
+            "description": "Declarative trusted-component composition, e.g. {\"component\": {\"name\": \"Status\", \"version\": \"1.0\"}, \"props\": {\"label\": {\"$prop\": \"/label\"}, \"tone\": \"positive\"}}. component.name is either a shipped catalog name (e.g. \"Status\", \"Chart\") or another business.<slug> component; component.version is that component's version string. props holds the child component's own props, each either a literal or a {$prop:'/pointer'} binding into this component's own propsSchema. A node may also carry style: {tone?, radius?, size?} from the closed Surface token vocabulary, and children: an array of further view nodes of this same shape.",
+            "required": [
+              "component",
+              "props"
+            ],
+            "properties": {
+              "component": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "version": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "props": {
+                "type": "object"
+              },
+              "style": {
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                  "tone": {
+                    "anyOf": [
+                      {
+                        "const": "neutral",
+                        "type": "string"
+                      },
+                      {
+                        "const": "positive",
+                        "type": "string"
+                      },
+                      {
+                        "const": "warning",
+                        "type": "string"
+                      },
+                      {
+                        "const": "negative",
+                        "type": "string"
+                      },
+                      {
+                        "const": "info",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "radius": {
+                    "anyOf": [
+                      {
+                        "const": "none",
+                        "type": "string"
+                      },
+                      {
+                        "const": "sm",
+                        "type": "string"
+                      },
+                      {
+                        "const": "md",
+                        "type": "string"
+                      },
+                      {
+                        "const": "lg",
+                        "type": "string"
+                      },
+                      {
+                        "const": "full",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "const": "xs",
+                        "type": "string"
+                      },
+                      {
+                        "const": "sm",
+                        "type": "string"
+                      },
+                      {
+                        "const": "md",
+                        "type": "string"
+                      },
+                      {
+                        "const": "lg",
+                        "type": "string"
+                      },
+                      {
+                        "const": "xl",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "web": {
+            "type": "object",
+            "description": "Declarative trusted-component composition, e.g. {\"component\": {\"name\": \"Status\", \"version\": \"1.0\"}, \"props\": {\"label\": {\"$prop\": \"/label\"}, \"tone\": \"positive\"}}. component.name is either a shipped catalog name (e.g. \"Status\", \"Chart\") or another business.<slug> component; component.version is that component's version string. props holds the child component's own props, each either a literal or a {$prop:'/pointer'} binding into this component's own propsSchema. A node may also carry style: {tone?, radius?, size?} from the closed Surface token vocabulary, and children: an array of further view nodes of this same shape.",
+            "required": [
+              "component",
+              "props"
+            ],
+            "properties": {
+              "component": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "version": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "props": {
+                "type": "object"
+              },
+              "style": {
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                  "tone": {
+                    "anyOf": [
+                      {
+                        "const": "neutral",
+                        "type": "string"
+                      },
+                      {
+                        "const": "positive",
+                        "type": "string"
+                      },
+                      {
+                        "const": "warning",
+                        "type": "string"
+                      },
+                      {
+                        "const": "negative",
+                        "type": "string"
+                      },
+                      {
+                        "const": "info",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "radius": {
+                    "anyOf": [
+                      {
+                        "const": "none",
+                        "type": "string"
+                      },
+                      {
+                        "const": "sm",
+                        "type": "string"
+                      },
+                      {
+                        "const": "md",
+                        "type": "string"
+                      },
+                      {
+                        "const": "lg",
+                        "type": "string"
+                      },
+                      {
+                        "const": "full",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "const": "xs",
+                        "type": "string"
+                      },
+                      {
+                        "const": "sm",
+                        "type": "string"
+                      },
+                      {
+                        "const": "md",
+                        "type": "string"
+                      },
+                      {
+                        "const": "lg",
+                        "type": "string"
+                      },
+                      {
+                        "const": "xl",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "slack": {
+            "type": "object",
+            "description": "Declarative trusted-component composition, e.g. {\"component\": {\"name\": \"Status\", \"version\": \"1.0\"}, \"props\": {\"label\": {\"$prop\": \"/label\"}, \"tone\": \"positive\"}}. component.name is either a shipped catalog name (e.g. \"Status\", \"Chart\") or another business.<slug> component; component.version is that component's version string. props holds the child component's own props, each either a literal or a {$prop:'/pointer'} binding into this component's own propsSchema. A node may also carry style: {tone?, radius?, size?} from the closed Surface token vocabulary, and children: an array of further view nodes of this same shape.",
+            "required": [
+              "component",
+              "props"
+            ],
+            "properties": {
+              "component": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "version": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "props": {
+                "type": "object"
+              },
+              "style": {
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                  "tone": {
+                    "anyOf": [
+                      {
+                        "const": "neutral",
+                        "type": "string"
+                      },
+                      {
+                        "const": "positive",
+                        "type": "string"
+                      },
+                      {
+                        "const": "warning",
+                        "type": "string"
+                      },
+                      {
+                        "const": "negative",
+                        "type": "string"
+                      },
+                      {
+                        "const": "info",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "radius": {
+                    "anyOf": [
+                      {
+                        "const": "none",
+                        "type": "string"
+                      },
+                      {
+                        "const": "sm",
+                        "type": "string"
+                      },
+                      {
+                        "const": "md",
+                        "type": "string"
+                      },
+                      {
+                        "const": "lg",
+                        "type": "string"
+                      },
+                      {
+                        "const": "full",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "const": "xs",
+                        "type": "string"
+                      },
+                      {
+                        "const": "sm",
+                        "type": "string"
+                      },
+                      {
+                        "const": "md",
+                        "type": "string"
+                      },
+                      {
+                        "const": "lg",
+                        "type": "string"
+                      },
+                      {
+                        "const": "xl",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "github": {
+            "type": "object",
+            "description": "Declarative trusted-component composition, e.g. {\"component\": {\"name\": \"Status\", \"version\": \"1.0\"}, \"props\": {\"label\": {\"$prop\": \"/label\"}, \"tone\": \"positive\"}}. component.name is either a shipped catalog name (e.g. \"Status\", \"Chart\") or another business.<slug> component; component.version is that component's version string. props holds the child component's own props, each either a literal or a {$prop:'/pointer'} binding into this component's own propsSchema. A node may also carry style: {tone?, radius?, size?} from the closed Surface token vocabulary, and children: an array of further view nodes of this same shape.",
+            "required": [
+              "component",
+              "props"
+            ],
+            "properties": {
+              "component": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "version": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "props": {
+                "type": "object"
+              },
+              "style": {
+                "additionalProperties": false,
+                "type": "object",
+                "properties": {
+                  "tone": {
+                    "anyOf": [
+                      {
+                        "const": "neutral",
+                        "type": "string"
+                      },
+                      {
+                        "const": "positive",
+                        "type": "string"
+                      },
+                      {
+                        "const": "warning",
+                        "type": "string"
+                      },
+                      {
+                        "const": "negative",
+                        "type": "string"
+                      },
+                      {
+                        "const": "info",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "radius": {
+                    "anyOf": [
+                      {
+                        "const": "none",
+                        "type": "string"
+                      },
+                      {
+                        "const": "sm",
+                        "type": "string"
+                      },
+                      {
+                        "const": "md",
+                        "type": "string"
+                      },
+                      {
+                        "const": "lg",
+                        "type": "string"
+                      },
+                      {
+                        "const": "full",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "size": {
+                    "anyOf": [
+                      {
+                        "const": "xs",
+                        "type": "string"
+                      },
+                      {
+                        "const": "sm",
+                        "type": "string"
+                      },
+                      {
+                        "const": "md",
+                        "type": "string"
+                      },
+                      {
+                        "const": "lg",
+                        "type": "string"
+                      },
+                      {
+                        "const": "xl",
+                        "type": "string"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "code": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Authored view code for the web channel, used when no composition of shipped components can express what was asked. Provide { web: { source } } — a single JSX source defining function render(props, tulip) and returning JSX. It is compiled and validated here, so a syntax error comes back as a tool error you can fix. Compute every coordinate, scale and tick yourself and bake the numbers into props: the runtime performs no layout and no data transformation. The code runs in an isolated frame with no network, no storage, no cookies and no access to the page. Import nothing. To make it interactive, put the action in props as an object — { event: \"your.event\" }, never a bare event-name string — and pass that same object to tulip.emit(action, input). Every example must carry it, because the handles authorising an emit are minted from the published props, so an action absent there is silently dropped. Emit on commit (blur, Enter, an explicit save), never per keystroke; hold in-progress edits in React state. A code view renders on web only; declare a declarative view for any other target.",
+        "properties": {
+          "web": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source"
+            ],
+            "properties": {
+              "source": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "surface_component_get": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "slug"
+    ],
+    "properties": {
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*$"
+      }
+    }
+  },
+  "surface_component_list": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

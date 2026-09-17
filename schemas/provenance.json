@@ -1,0 +1,30 @@
+{
+  "repository": "https://github.com/TulipFarm/tulipfarm",
+  "baseCommit": "c3b04d036b4a3cb4134f23db09efc960cd327650",
+  "note": "Generated from the canonical checkout; source hashes identify in-progress changes beyond baseCommit. Schemas are data snapshots, not a runtime dependency.",
+  "schemaSha256": {
+    "pack-v1.schema.json": "d9779b2b9bbaa73308ccb772397bf99110f21519c9305a2a6c080354ac722157",
+    "catalog-v1.schema.json": "77a54e3c99798dc9c46320f7387babf4370ab731dd8f7aff622600a2ea2ce27b",
+    "authoring-tools.json": "7adbf7bed0bc7db7a69b8e53a6878ed5c950a9aaa6f5e2ca78c3046349a89572",
+    "agent-frontmatter.schema.json": "2943cd0d348841a50eb902f73f383058bff1b6a93d82c5d701c036735e9447f8",
+    "skill-create.schema.json": "b60676cdcf494018717f5f06aaae88d4dc3645db5c086609d7911a7e0071b4c9",
+    "surface-primitives.json": "8a0e970666bcdb5ba6f23df04bf1a5709032fbb133e7e8bd7b1d93ea4e5afa65"
+  },
+  "sourceSha256": {
+    "apps/docs/scripts/generate-pack-schema.ts": "3262b52d0784f444ddfe306dbd23dfe034331301fc2d70210159636c2ac2fc58",
+    "apps/docs/public/schemas/pack/v1.schema.json": "dcaf0dad797ce6b0112a3a68297ac8b3ebc931240918ed8e974a1b9280c1f589",
+    "packages/schema/src/pack.ts": "8b573729b3e9de823629550204055eaf319900f6ae29bfaec42a63bbe51d2bbb",
+    "packages/schema/src/plan.ts": "5c5c1a3440df8e02a441c6ba72dcbac2a71f5e9d6ba7bafb072ae705ea9991fe",
+    "packages/schema/src/agent.ts": "256eb535057cfb7883e66dc75ff5e8c253b8172bfde4b99f4f4b0bc592da4082",
+    "packages/schema/src/skill-tool-schemas.ts": "c2ce9553dd917e18a92efc138a9cafbfc7272a50b972d20e51f677c0f5555d71",
+    "packages/schema/src/skill-frontmatter.ts": "366e98b715f2b45b73dbc83fc7f20f59c1d7f53c731107b0d3888d59ebcd1708",
+    "packages/schema/src/transforms/validate-schema.ts": "4f6841d5fbed9d3d1f8012e006e87a31ebcd0ba334362824c106c45fa44bb58a",
+    "packages/run-kernel/src/routine/dag-plan.ts": "df66bc463eb38875251dad691194eddfbb4550977ba97f1ee7506cccc0542e93",
+    "apps/api/src/soul/resource-types/tools.ts": "e037df14c62647989c7e88b7e50c988c3fed7eacf316845bfc3f6c32843cd832",
+    "apps/api/src/soul/skills/tools.ts": "8e733f2ebe3cfdb129375eddcf2dd1841d801f0aeee088d1d7b894e9f85d3dbf",
+    "apps/api/src/soul/agents/tools.ts": "e29a5ade6f8f9081d8c684ee484d791daf603cc45331cd45570d193e183f4ffd",
+    "apps/api/src/soul/surface-components/tools.ts": "33c673bc839dd80709bcd0ea5901b4ddd838c6c0807cb63f468b63e8a654611d",
+    "packages/surface/src/catalog.ts": "b2e00a923b32884f1e2357a062513f03417f31fc3432d70d5a64cf9f74cf4467",
+    "packages/surface/src/soul.ts": "0dfad755848384a8c600af656e296be20e93e4ad5b0a5b149296f8ffdcd86296"
+  }
+}

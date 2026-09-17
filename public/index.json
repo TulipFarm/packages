@@ -1,0 +1,124 @@
+{
+  "packs": [
+    {
+      "name": "lead-qualification",
+      "title": "Evidence-led lead qualification",
+      "description": "Qualify inbound leads against an explicit fit rubric, keep evidence and unknowns, and prepare a human routing decision.",
+      "category": "Sales",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/lead-qualification.yaml"
+    },
+    {
+      "name": "deal-follow-up",
+      "title": "Deal follow-up desk",
+      "description": "Keep commitments, next steps, and draft follow-ups together without sending messages or advancing deals automatically.",
+      "category": "Sales",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/deal-follow-up.yaml"
+    },
+    {
+      "name": "account-briefs",
+      "title": "Account meeting briefs",
+      "description": "Prepare cited account briefs that distinguish known facts, open questions, and proposed meeting goals.",
+      "category": "Sales",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/account-briefs.yaml"
+    },
+    {
+      "name": "employee-onboarding",
+      "title": "Employee onboarding readiness",
+      "description": "Track role-based onboarding prerequisites and hand off proposed access requests without provisioning accounts.",
+      "category": "IT Ops",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/employee-onboarding.yaml"
+    },
+    {
+      "name": "access-reviews",
+      "title": "Access review evidence desk",
+      "description": "Reconcile entitlement evidence and prepare retain-or-revoke recommendations for a human reviewer.",
+      "category": "IT Ops",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/access-reviews.yaml"
+    },
+    {
+      "name": "incident-triage",
+      "title": "Incident triage notebook",
+      "description": "Group observed service failures, assess impact, and prepare a cited incident handoff without changing infrastructure.",
+      "category": "IT Ops",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/incident-triage.yaml"
+    },
+    {
+      "name": "content-calendar",
+      "title": "Editorial content calendar",
+      "description": "Turn an approved campaign brief into reviewable content slots, source-backed drafts, and a publishing checklist.",
+      "category": "Marketing",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/content-calendar.yaml"
+    },
+    {
+      "name": "campaign-reporting",
+      "title": "Campaign performance review",
+      "description": "Normalize campaign observations and explain performance with explicit windows, currencies, and attribution caveats.",
+      "category": "Marketing",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/campaign-reporting.yaml"
+    },
+    {
+      "name": "document-intake",
+      "title": "Document intake register",
+      "description": "Classify incoming documents, preserve provenance, and identify missing fields before a human routing decision.",
+      "category": "Document Ops",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/document-intake.yaml"
+    },
+    {
+      "name": "contract-renewals",
+      "title": "Contract renewal watch",
+      "description": "Extract evidenced renewal obligations and prepare a review queue without making legal or cancellation decisions.",
+      "category": "Document Ops",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/contract-renewals.yaml"
+    },
+    {
+      "name": "invoice-review",
+      "title": "Invoice exception review",
+      "description": "Compare invoice evidence with approved purchase records and route mismatches for human review, never payment.",
+      "category": "Document Ops",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/invoice-review.yaml"
+    },
+    {
+      "name": "support-triage",
+      "title": "Support triage desk",
+      "description": "Classify incoming support cases, expose urgency evidence, and draft an empathetic response for a human.",
+      "category": "Support",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/support-triage.yaml"
+    },
+    {
+      "name": "knowledge-gaps",
+      "title": "Support knowledge gap review",
+      "description": "Identify recurring unanswered questions and propose evidence-backed documentation improvements without publishing them.",
+      "category": "Support",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/knowledge-gaps.yaml"
+    },
+    {
+      "name": "issue-triage",
+      "title": "Engineering issue triage",
+      "description": "Prepare evidence-led issue classifications, reproduction gaps, and duplicate candidates for maintainer review.",
+      "category": "Engineering",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/issue-triage.yaml"
+    },
+    {
+      "name": "release-readiness",
+      "title": "Release readiness review",
+      "description": "Assemble a release evidence checklist and surface blockers without asserting missing checks passed or deploying anything.",
+      "category": "Engineering",
+      "version": 1,
+      "url": "https://packs.tulipfarm.site/release-readiness.yaml"
+    }
+  ]
+}
