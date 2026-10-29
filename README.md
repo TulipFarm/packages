@@ -69,8 +69,11 @@ The Pages build uses Node 26.5.0, `PNPM_VERSION=11.5.3` and
 `SKIP_DEPENDENCY_INSTALL=1`, with this command and `dist` output directory:
 
 ```sh
-npm install --global pnpm@11.5.3 && pnpm install --frozen-lockfile && pnpm lint && pnpm check && pnpm build && pnpm test
+pnpm install --frozen-lockfile && pnpm lint && pnpm check && pnpm build && pnpm test
 ```
+
+Pages provisions the pinned pnpm version before this command; do not install
+pnpm globally over its Corepack shims.
 
 Set `SITE_INDEXING=true` only in the production environment and `false` in
 previews. GitHub CI also checks default, production and preview indexing.
