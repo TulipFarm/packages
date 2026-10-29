@@ -1,0 +1,25 @@
+---
+import Site from '../layouts/Site.astro';
+import CatalogBrowser from '../components/CatalogBrowser';
+import { loadCatalog } from '../lib/catalog';
+import { presentTemplate } from '../lib/presentation';
+import { catalogSchema } from '../lib/seo';
+import { site } from '../lib/site';
+
+const entries = await loadCatalog();
+const cards = entries.map(entry => ({
+  slug: entry.slug,
+  version: entry.version,
+  title: entry.document.package.title,
+  description: entry.document.package.description,
+  category: entry.category,
+  tags: entry.tags,
+  detailPath: entry.detailPath,
+  counts: entry.counts,
+  presentation: presentTemplate(entry),
+}));
+---
+
+<Site title="Packages" catalog description={site.description} structuredData={catalogSchema(entries)}>
+  <CatalogBrowser entries={cards} client:load />
+</Site>

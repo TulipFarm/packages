@@ -1,0 +1,14 @@
+/catalog.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=60
+
+/packages/:slug/:version/package.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex

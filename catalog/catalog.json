@@ -1,0 +1,68 @@
+[
+  {
+    "slug": "marketing-content",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["content", "campaigns", "editorial"],
+    "useCases": [
+      "Plan a campaign content calendar",
+      "Review briefs against audience and evidence",
+      "Summarize editorial feedback before publishing"
+    ]
+  },
+  {
+    "slug": "sales-crm",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["pipeline", "accounts", "follow-up"],
+    "useCases": [
+      "Review a sales pipeline by stage",
+      "Prepare an evidence-based deal follow-up",
+      "Spot missing next steps and stale activities"
+    ]
+  },
+  {
+    "slug": "support-desk",
+    "version": "1.0.0",
+    "category": "Support",
+    "tags": ["tickets", "triage", "customer-support"],
+    "useCases": [
+      "Triage tickets by queue and priority",
+      "Prepare a customer reply for human review",
+      "Summarize unresolved tickets and escalation needs"
+    ]
+  },
+  {
+    "slug": "leave-management",
+    "version": "1.0.0",
+    "category": "HR",
+    "tags": ["time-off", "balances", "approvals"],
+    "useCases": [
+      "Review requested days against recorded balances",
+      "Prepare a manager's leave review",
+      "Identify missing coverage and policy information"
+    ]
+  },
+  {
+    "slug": "project-tracking",
+    "version": "1.0.0",
+    "category": "Engineering",
+    "tags": ["sprints", "issues", "delivery"],
+    "useCases": [
+      "Review sprint scope and blockers",
+      "Check issues for clear acceptance criteria",
+      "Prepare a delivery status summary"
+    ]
+  },
+  {
+    "slug": "product-backlog",
+    "version": "1.0.0",
+    "category": "Product",
+    "tags": ["roadmap", "feedback", "prioritization"],
+    "useCases": [
+      "Triage feedback into a product backlog",
+      "Compare work against initiative outcomes",
+      "Prepare an evidence-based priority review"
+    ]
+  }
+]

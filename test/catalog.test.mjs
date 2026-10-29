@@ -1,0 +1,145 @@
+import assert from 'node:assert/strict';
+import { execFile } from 'node:child_process';
+import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { test } from 'node:test';
+import { promisify } from 'node:util';
+import { loadCatalog } from '../src/lib/catalog.ts';
+
+const execute = promisify(execFile);
+const root = process.cwd();
+const origin = 'https://packages.tulipfarm.ai';
+const entries = await loadCatalog();
+const built = path => readFile(resolve(root, 'dist', path.replace(/^\//, '')), 'utf8');
+const indexable =
+  process.env.SITE_INDEXING === 'true' && (!process.env.CF_PAGES_BRANCH || process.env.CF_PAGES_BRANCH === 'main');
+
+test('public feed and version endpoints preserve the validated source bytes', async () => {
+  const feed = JSON.parse(await built('catalog.json'));
+  assert.equal(feed.packages.length, entries.length);
+  for (const entry of entries) {
+    const item = feed.packages.find(candidate => candidate.name === entry.slug && candidate.version === entry.version);
+    assert.ok(item, entry.slug);
+    assert.equal(item.title, entry.document.package.title);
+    assert.equal(item.page, entry.detailPath);
+    assert.equal(item.url, entry.downloadPath);
+    assert.equal(await built(item.url), entry.raw);
+  }
+});
+
+test('details expose real resource groups and an unavailable install action without JavaScript', async () => {
+  for (const entry of entries) {
+    const html = await built(`${entry.detailPath}index.html`);
+    const button = html.match(/<button\b[^>]*>[\s\S]*?Install to workspace[\s\S]*?<\/button>/)?.[0];
+    assert.ok(button, entry.slug);
+    assert.match(button, /\bdisabled(?:=|\s|>)/);
+    assert.match(html, /Install link not available yet/);
+    for (const resource of entry.resources) {
+      assert.ok(html.includes(`contents-${resource.kind}`), `${entry.slug}: ${resource.kind}`);
+    }
+    assert.doesNotMatch(html, /PlanOutline|Download JSON|templates/i);
+    assert.match(html, /data-theme-toggle/);
+  }
+});
+
+test('canonical metadata, structured data and social images exist for every public page', async () => {
+  const titles = new Set();
+  const descriptions = new Set();
+  for (const path of ['/', ...entries.map(entry => entry.detailPath)]) {
+    const html = await built(`${path}index.html`);
+    assert.ok(html.includes(`<link rel="canonical" href="${origin}${path}"`), path);
+    assert.match(html, /name="twitter:card" content="summary_large_image"/);
+    const robots = html.match(/name="robots" content="([^"]+)"/)?.[1];
+    assert.equal(robots, indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow');
+    titles.add(html.match(/<title>(.*?)<\/title>/)?.[1]);
+    descriptions.add(html.match(/name="description" content="([^"]+)"/)?.[1]);
+    const graph = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] ?? '');
+    assert.equal(graph['@context'], 'https://schema.org');
+    assert.ok(Array.isArray(graph['@graph']));
+    const image = new URL(html.match(/property="og:image" content="([^"]+)"/)?.[1] ?? '');
+    assert.equal(image.origin, origin);
+    const bytes = await readFile(join(root, 'dist', image.pathname));
+    assert.equal(bytes.subarray(1, 4).toString(), 'PNG');
+    assert.equal(bytes.readUInt32BE(16), 1200);
+    assert.equal(bytes.readUInt32BE(20), 630);
+  }
+  assert.equal(titles.size, entries.length + 1);
+  assert.equal(descriptions.size, entries.length + 1);
+  const sitemap = await built('sitemap.xml');
+  assert.equal([...sitemap.matchAll(/<loc>/g)].length, indexable ? entries.length + 1 : 0);
+  assert.match(await built('robots.txt'), indexable ? /Allow: \// : /Disallow: \//);
+  const missing = await built('404.html');
+  assert.match(missing, /name="robots" content="noindex, follow"/);
+  assert.doesNotMatch(missing, /rel="canonical"/);
+});
+
+test('deployment includes public JSON CORS and preview noindex headers', async () => {
+  const headers = await built('_headers');
+  for (const path of ['/catalog.json', '/packages/:slug/:version/package.json']) {
+    assert.ok(headers.includes(`${path}\n  Access-Control-Allow-Origin: *`));
+  }
+  assert.match(headers, /https:\/\/:project\.pages\.dev\/\*\n  X-Robots-Tag: noindex/);
+});
+
+test('catalog rejects invalid identities, references, asset bytes and schema pins', async () => {
+  const cases = [
+    ['catalog/catalog.json', data => data.push(data[0]), /Duplicate package identities/],
+    [
+      'packages/leave-management/1.0.0/package.json',
+      data => {
+        data.package.version = '9.0.0';
+      },
+      /identity or license mismatch/,
+    ],
+    [
+      'packages/leave-management/1.0.0/package.json',
+      data => {
+        data.outputs[0].resource.key = 'missing';
+      },
+      /Invalid typed reference/,
+    ],
+    [
+      'packages/leave-management/1.0.0/package.json',
+      data => {
+        data.assets[0].content += '\nchanged';
+      },
+      /Asset integrity mismatch/,
+    ],
+    [
+      'packages/leave-management/1.0.0/package.json',
+      data => {
+        delete data.requires;
+      },
+      /required/,
+    ],
+    [
+      'catalog/schema-pin.json',
+      data => {
+        data.sha256 = '0'.repeat(64);
+      },
+      /Schema cache digest mismatch/,
+    ],
+  ];
+  for (const [path, mutate, message] of cases) {
+    const fixture = await mkdtemp(join(tmpdir(), 'tulipfarm-packages-test-'));
+    try {
+      for (const directory of ['catalog', 'packages']) {
+        await cp(join(root, directory), join(fixture, directory), { recursive: true });
+      }
+      const file = join(fixture, path);
+      const data = JSON.parse(await readFile(file, 'utf8'));
+      mutate(data);
+      await writeFile(file, JSON.stringify(data));
+      await assert.rejects(
+        execute(process.execPath, [join(root, 'scripts/validate-packages.ts')], { cwd: fixture }),
+        error => {
+          assert.match(error.stderr, message);
+          return true;
+        },
+      );
+    } finally {
+      await rm(fixture, { recursive: true });
+    }
+  }
+});

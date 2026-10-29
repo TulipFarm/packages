@@ -1,0 +1,167 @@
+---
+import Site from '../../../../layouts/Site.astro';
+import PackageContents from '../../../../components/PackageContents';
+import { PackageBreadcrumb, PackageInformation } from '../../../../components/PackageMeta';
+import { Button } from '@tulipfarm/sprout/button';
+import TemplateIdentity, { styleLabel } from '../../../../components/TemplateIdentity';
+import TemplateVisual from '../../../../components/TemplateVisual';
+import { presentTemplate } from '../../../../lib/presentation';
+import { loadCatalog, type CatalogEntry } from '../../../../lib/catalog';
+import { getPackageContent } from '../../../../lib/package-content';
+import { packageSchema } from '../../../../lib/seo';
+
+export async function getStaticPaths() {
+  const entries = await loadCatalog();
+  return entries.map(entry => ({
+    params: { slug: entry.slug, version: entry.version },
+    props: { entry, related: entries.filter(item => getPackageContent(entry.slug).related.includes(item.slug)) },
+  }));
+}
+interface Props {
+  entry: CatalogEntry;
+  related: CatalogEntry[];
+}
+const { entry, related } = Astro.props;
+const { document } = entry;
+const presentation = presentTemplate(entry);
+const content = getPackageContent(entry.slug);
+---
+
+<Site
+  title={content.title}
+  description={content.description}
+  image={`/social/${entry.slug}.png`}
+  structuredData={packageSchema(entry)}
+>
+  <PackageBreadcrumb title={document.package.title} />
+  <header class="package-heading">
+    <div class="package-title-group">
+      <TemplateIdentity slug={entry.slug} brand={presentation.brand} large />
+      <div>
+        <p class="eyebrow">
+          {entry.category} / {styleLabel(presentation.brand)}
+        </p>
+        <h1>{document.package.title}</h1>
+      </div>
+    </div>
+    <p class="hero-description">{presentation.outcome}</p>
+    <div class="package-heading-actions">
+      <div class="hero-facts">
+        <span>v{entry.version}</span>
+        <span>{document.package.license} license</span>
+        <span>System package v1</span>
+      </div>
+      <div class="package-install-action">
+        <Button disabled aria-describedby="install-link-status">
+          Install to workspace
+        </Button>
+        <p class="small" id="install-link-status">
+          Install link not available yet.
+        </p>
+      </div>
+    </div>
+  </header>
+  <div class="detail-layout">
+    <div class="detail-main">
+      <section class="template-overview" aria-label="Package overview">
+        <TemplateVisual data={presentation.visual} large />
+        <p class="small">
+          Included example data, not a running workspace.
+          {presentation.brand && ' Third-party marks indicate workflow style, not an integration or endorsement.'}
+        </p>
+      </section>
+      <section class="use-cases" aria-labelledby="use-cases-heading">
+        <h2 id="use-cases-heading">What you can build</h2>
+        <p>{content.introduction}</p>
+        <ul>
+          {entry.useCases.map(useCase => (
+            <li>{useCase}</li>
+          ))}
+        </ul>
+        <h3>Who this package is for</h3>
+        <p>{content.audience}</p>
+      </section>
+      <section class="package-guide" aria-labelledby="usage-heading">
+        <h2 id="usage-heading">How to use this package</h2>
+        <p class="small">
+          Install links are not available yet. These steps describe using the package after installation.
+        </p>
+        <ol>
+          {content.steps.map(step => (
+            <li>{step}</li>
+          ))}
+        </ol>
+        <h3>What it does not do</h3>
+        <p>{content.limitations}</p>
+      </section>
+      <section aria-labelledby="contents-heading" class="contents-region">
+        <h2 id="contents-heading">What's included</h2>
+        <PackageContents resources={entry.resources} />
+      </section>
+      <section class="source-section" aria-labelledby="source-heading">
+        <h2 id="source-heading">Nothing hidden</h2>
+        <p>
+          Read the exact versioned definition behind this package. Package content is displayed, never executed by this
+          site.
+        </p>
+        <details>
+          <summary>Read the package JSON</summary>
+          <pre><code>{entry.raw}</code></pre>
+        </details>
+      </section>
+      <section class="package-guide" aria-labelledby="questions-heading">
+        <h2 id="questions-heading">Common questions</h2>
+        {content.questions.map(item => (
+          <div class="package-question">
+            <h3>{item.question}</h3>
+            <p>{item.answer}</p>
+          </div>
+        ))}
+      </section>
+      <section class="package-guide" aria-labelledby="related-heading">
+        <h2 id="related-heading">Explore related packages</h2>
+        <ul class="related-packages">
+          {related.map(item => (
+            <li>
+              <a href={item.detailPath}>{item.document.package.title}</a>
+              <p>{presentTemplate(item).outcome}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+    <aside class="package-sidebar" aria-label="Package information and installation">
+      <PackageInformation slug={entry.slug} version={entry.version} counts={entry.counts} />
+      <section class="requirements">
+        <h2>Before you use it</h2>
+        <p class="small">Workspace inputs are resolved by the installer, not by this website.</p>
+        <dl>
+          {document.inputs.map(input => (
+            <div>
+              <dt>{input.title}</dt>
+              <dd>{input.kind.replaceAll('-', ' ')}</dd>
+            </div>
+          ))}
+        </dl>
+        <h3>Required capabilities</h3>
+        <ul>
+          {document.requires.capabilities.map(capability => (
+            <li>{capability.replaceAll('-', ' ')}</li>
+          ))}
+        </ul>
+        <p class="small">
+          Review permissions and requested states before installation. Schema validation does not prove a successful
+          install.
+        </p>
+      </section>
+      <section class="requirements">
+        <h2>Declared outputs</h2>
+        <ul>
+          {document.outputs.map(output => (
+            <li>{entry.resources.find(resource => resource.key === output.resource.key)?.title ?? output.key}</li>
+          ))}
+        </ul>
+      </section>
+    </aside>
+  </div>
+</Site>
