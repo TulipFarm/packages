@@ -1,0 +1,45 @@
+{
+  "name": "@tulipfarm/packages",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "packageManager": "pnpm@11.5.3",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "pnpm validate:packages && astro build",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
+    "preview": "astro preview",
+    "validate:packages": "node scripts/validate-packages.ts",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxfmt --check && oxlint --deny-warnings",
+    "lint:fix": "oxlint --fix"
+  },
+  "dependencies": {
+    "@astrojs/react": "7.1.1",
+    "@tailwindcss/vite": "4.3.3",
+    "@tulipfarm/sprout": "https://github.com/TulipFarm/sprout/releases/download/v0.12.0/tulipfarm-sprout-0.12.0.tgz",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "astro": "7.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "reicon-react": "1.2.6",
+    "tailwindcss": "4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@astrojs/compiler-rs": "0.5.2",
+    "@types/node": "26.0.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "oxfmt": "0.73.0",
+    "oxlint": "1.85.0",
+    "typescript": "6.0.3"
+  }
+}

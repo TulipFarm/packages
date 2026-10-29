@@ -1,0 +1,135 @@
+---
+import '../styles/site.css';
+import LinkButton from '../components/LinkButton';
+import ThemeToggle from '../components/ThemeToggle';
+import { absoluteUrl, isIndexingEnabled, site } from '../lib/site';
+
+interface Props {
+  title: string;
+  description: string;
+  catalog?: boolean;
+  noindex?: boolean;
+  image?: string;
+  structuredData?: Record<string, unknown>;
+}
+const {
+  title,
+  description,
+  catalog = false,
+  noindex = false,
+  image = '/social/packages.png',
+  structuredData,
+} = Astro.props;
+const pageTitle = title === 'Packages' ? site.name : `${title} · ${site.name}`;
+const canonical = absoluteUrl(Astro.url.pathname);
+const indexable = isIndexingEnabled() && !noindex;
+const imageUrl = absoluteUrl(image);
+---
+
+<!doctype html>
+<html lang="en" data-sprout-theme="tulipfarm">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="application-name" content={site.name} />
+    <meta name="robots" content={indexable ? 'index, follow, max-image-preview:large' : 'noindex, follow'} />
+    <title>{pageTitle}</title>
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title === 'Packages' ? site.name : `${title} from ${site.name}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={title === 'Packages' ? site.name : `${title} from ${site.name}`} />
+    <link rel="sitemap" href="/sitemap.xml" type="application/xml" />
+    <link rel="alternate" href="/catalog.json" type="application/json" title="TulipFarm package catalog" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {structuredData && (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData).replace(/</g, '\\u003c')} />
+    )}
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const media = matchMedia('(prefers-color-scheme: dark)');
+        const storageKey = 'tulipfarm-theme';
+        const readPreference = value => (value === 'light' || value === 'dark' ? value : null);
+        let preference = null;
+        try {
+          preference = readPreference(localStorage.getItem(storageKey));
+        } catch {
+          preference = null;
+        }
+        const apply = () => root.classList.toggle('dark', preference ? preference === 'dark' : media.matches);
+        apply();
+        root.dataset.themeReady = '';
+        media.addEventListener('change', apply);
+        window.addEventListener('storage', event => {
+          if (event.key === storageKey || event.key === null) {
+            preference = readPreference(event.newValue);
+            apply();
+          }
+        });
+        document.addEventListener('click', event => {
+          if (!(event.target instanceof Element) || !event.target.closest('[data-theme-toggle]')) return;
+          preference = root.classList.contains('dark') ? 'light' : 'dark';
+          apply();
+          try {
+            localStorage.setItem(storageKey, preference);
+          } catch {
+            // The current page still switches when browser storage is blocked.
+          }
+        });
+      })();
+    </script>
+  </head>
+  <body class:list={{ 'catalog-page': catalog }}>
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    {!catalog && (
+      <header class="site-header">
+        <a class="wordmark" href="/" aria-label="TulipFarm Packages home">
+          <img src="/favicon.svg" width="28" height="28" alt="" />
+          <span class="brand-name">
+            TulipFarm <span class="brand-product">Packages</span>
+          </span>
+        </a>
+        <nav aria-label="Main navigation">
+          <LinkButton variant="ghost" href="/#how-it-works">
+            How it works
+          </LinkButton>
+          <LinkButton variant="ghost" href="https://github.com/TulipFarm/packages">
+            GitHub <span aria-hidden="true">↗</span>
+          </LinkButton>
+          <ThemeToggle />
+        </nav>
+      </header>
+    )}
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>A head start, in the open.</p>
+      <div>
+        <a href="/catalog.json">JSON catalog</a>
+        <a href="https://tulipfarm.ai/schemas/system-package.v1.json">Schema v1</a>
+        <a href="https://github.com/TulipFarm/packages/blob/main/LICENSE">MIT license</a>
+        <a href="https://tulipfarm.ai">
+          TulipFarm <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </footer>
+  </body>
+</html>

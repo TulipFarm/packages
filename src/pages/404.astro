@@ -1,0 +1,17 @@
+---
+import Site from '../layouts/Site.astro';
+import LinkButton from '../components/LinkButton';
+---
+
+<Site
+  title="Package not found"
+  noindex
+  description="This package page does not exist. Browse the public TulipFarm package catalog."
+>
+  <section class="hero not-found">
+    <p class="eyebrow">404</p>
+    <h1>This page is not in the catalog.</h1>
+    <p>Browse the library to find a package and its available version.</p>
+    <LinkButton href="/">Explore all packages →</LinkButton>
+  </section>
+</Site>
