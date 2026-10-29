@@ -71,7 +71,11 @@ const imageUrl = absoluteUrl(image);
         } catch {
           preference = null;
         }
-        const apply = () => root.classList.toggle('dark', preference ? preference === 'dark' : media.matches);
+        const apply = () => {
+          const dark = preference ? preference === 'dark' : media.matches;
+          root.classList.toggle('dark', dark);
+          root.classList.toggle('light', !dark);
+        };
         apply();
         root.dataset.themeReady = '';
         media.addEventListener('change', apply);

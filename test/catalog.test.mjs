@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { test } from 'node:test';
 import { promisify } from 'node:util';
+import { runInNewContext } from 'node:vm';
 import { loadCatalog } from '../src/lib/catalog.ts';
 
 const execute = promisify(execFile);
@@ -80,6 +81,73 @@ test('deployment includes public JSON CORS and preview noindex headers', async (
     assert.ok(headers.includes(`${path}\n  Access-Control-Allow-Origin: *`));
   }
   assert.match(headers, /https:\/\/:project\.pages\.dev\/\*\n  X-Robots-Tag: noindex/);
+});
+
+test('theme preferences override the OS with explicit Sprout markers and follow cross-tab changes', async () => {
+  const html = await built('index.html');
+  const script = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)]
+    .map(match => match[1])
+    .find(source => source.includes("const storageKey = 'tulipfarm-theme'"));
+  assert.ok(script);
+  for (const osDark of [false, true]) {
+    for (const stored of [null, 'light', 'dark']) {
+      const classes = new Set();
+      const media = {
+        matches: osDark,
+        addEventListener: (_, listener) => {
+          media.change = listener;
+        },
+      };
+      const events = {};
+      let preference = stored;
+      const root = {
+        dataset: {},
+        classList: {
+          toggle: (name, enabled) => (enabled ? classes.add(name) : classes.delete(name)),
+          contains: name => classes.has(name),
+        },
+      };
+      class Toggle {
+        closest() {
+          return this;
+        }
+      }
+      runInNewContext(script, {
+        document: {
+          documentElement: root,
+          addEventListener: (name, listener) => {
+            events[name] = listener;
+          },
+        },
+        window: {
+          addEventListener: (name, listener) => {
+            events[name] = listener;
+          },
+        },
+        matchMedia: () => media,
+        localStorage: {
+          getItem: () => preference,
+          setItem: (_, value) => {
+            preference = value;
+          },
+        },
+        Element: Toggle,
+      });
+      const assertTheme = dark => assert.deepEqual([...classes], [dark ? 'dark' : 'light']);
+      const initialDark = stored ? stored === 'dark' : osDark;
+      assertTheme(initialDark);
+      events.click({ target: new Toggle() });
+      assertTheme(!initialDark);
+      assert.equal(preference, initialDark ? 'light' : 'dark');
+      media.matches = !osDark;
+      media.change();
+      assertTheme(!initialDark);
+      events.storage({ key: 'tulipfarm-theme', newValue: 'light' });
+      assertTheme(false);
+      events.storage({ key: 'tulipfarm-theme', newValue: null });
+      assertTheme(media.matches);
+    }
+  }
 });
 
 test('catalog rejects invalid identities, references, asset bytes and schema pins', async () => {
