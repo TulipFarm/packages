@@ -83,9 +83,9 @@ To roll back, select a previous successful production deployment in the Pages
 dashboard and choose **Rollback to this deployment**, then revert the source
 change through a PR.
 
-The production `pages.dev` alias redirects to the canonical domain. Preview
-hosts also receive `X-Robots-Tag: noindex`. No paid service or runtime Worker is
-required.
+The `pages.dev` aliases retain canonical metadata and receive
+`X-Robots-Tag: noindex`. Host-based redirects are not supported by the static
+`_redirects` file. No paid service or runtime Worker is required.
 
 ## Package contract
 
