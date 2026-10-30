@@ -381,14 +381,14 @@ export default function CatalogBrowser({ entries }: { entries: CatalogCard[] }) 
                 <strong>Look inside.</strong> Explore what is included and preview the example records.
               </li>
               <li>
-                <strong>Install to your workspace.</strong> An install link will take you to TulipFarm.
+                <strong>Install to your workspace.</strong> Open a private chat in your default TulipFarm organisation.
               </li>
               <li>
                 <strong>Review, then build.</strong> Confirm inputs and permissions in your workspace before creating
                 anything.
               </li>
             </ol>
-            <p className="small">Install links are not available yet. You can browse every package in the meantime.</p>
+            <p className="small">Sign in if needed. Nothing is installed until you approve the package in chat.</p>
           </section>
         </div>
       </div>

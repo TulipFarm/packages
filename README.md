@@ -11,7 +11,12 @@ systems, not full replacements for Jira, Linear or Zendesk.
 Catalog covers use purpose-specific illustrations, not execution diagrams.
 The field previews come from the package definitions; full example records and
 grouped resource lists remain on each package's detail page. The main action is
-**Install to workspace**, currently disabled until install links are supplied.
+**Install to workspace**, which opens
+`https://app.tulipfarm.ai/_chat?intent=install-package&packageName=marketing-content&packageVersion=1.0.0`
+with the selected package's exact name and version. TulipFarm signs the person
+in if needed, selects their default organisation and opens its private-chat
+installer. Inputs and one whole-package approval are collected there; clicking
+the marketplace link alone does not install anything.
 JSON remains available as technical source, not the primary user journey.
 
 ## Search and sharing

@@ -2,7 +2,7 @@
 import Site from '../../../../layouts/Site.astro';
 import PackageContents from '../../../../components/PackageContents';
 import { PackageBreadcrumb, PackageInformation } from '../../../../components/PackageMeta';
-import { Button } from '@tulipfarm/sprout/button';
+import LinkButton from '../../../../components/LinkButton';
 import TemplateIdentity, { styleLabel } from '../../../../components/TemplateIdentity';
 import TemplateVisual from '../../../../components/TemplateVisual';
 import { presentTemplate } from '../../../../lib/presentation';
@@ -25,6 +25,12 @@ const { entry, related } = Astro.props;
 const { document } = entry;
 const presentation = presentTemplate(entry);
 const content = getPackageContent(entry.slug);
+const installUrl = new URL('https://app.tulipfarm.ai/_chat');
+installUrl.search = new URLSearchParams({
+  intent: 'install-package',
+  packageName: entry.slug,
+  packageVersion: entry.version,
+}).toString();
 ---
 
 <Site
@@ -52,11 +58,9 @@ const content = getPackageContent(entry.slug);
         <span>System package v1</span>
       </div>
       <div class="package-install-action">
-        <Button disabled aria-describedby="install-link-status">
-          Install to workspace
-        </Button>
+        <LinkButton href={installUrl.href}>Install to workspace</LinkButton>
         <p class="small" id="install-link-status">
-          Install link not available yet.
+          Opens a private chat in your default organisation. Review and approve before anything is installed.
         </p>
       </div>
     </div>
@@ -84,7 +88,8 @@ const content = getPackageContent(entry.slug);
       <section class="package-guide" aria-labelledby="usage-heading">
         <h2 id="usage-heading">How to use this package</h2>
         <p class="small">
-          Install links are not available yet. These steps describe using the package after installation.
+          Choose Install to workspace, answer the setup questions, and approve the package once. Then follow these
+          steps.
         </p>
         <ol>
           {content.steps.map(step => (
