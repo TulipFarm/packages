@@ -29,13 +29,23 @@ test('public feed and version endpoints preserve the validated source bytes', as
   }
 });
 
-test('details expose real resource groups and an unavailable install action without JavaScript', async () => {
+test('details expose real resource groups and exact package chat links without JavaScript', async () => {
   for (const entry of entries) {
     const html = await built(`${entry.detailPath}index.html`);
-    const button = html.match(/<button\b[^>]*>[\s\S]*?Install to workspace[\s\S]*?<\/button>/)?.[0];
-    assert.ok(button, entry.slug);
-    assert.match(button, /\bdisabled(?:=|\s|>)/);
-    assert.match(html, /Install link not available yet/);
+    const anchor = [...html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].find(match =>
+      match[2].includes('Install to workspace'),
+    );
+    assert.ok(anchor, entry.slug);
+    const destination = new URL(anchor[1].match(/href="([^"]+)"/)[1].replaceAll('&amp;', '&'));
+    assert.equal(destination.origin, 'https://app.tulipfarm.ai');
+    assert.equal(destination.pathname, '/_chat');
+    assert.deepEqual(Object.fromEntries(destination.searchParams), {
+      intent: 'install-package',
+      packageName: entry.slug,
+      packageVersion: entry.version,
+    });
+    assert.doesNotMatch(anchor[1], /\b(?:disabled|aria-disabled)/);
+    assert.doesNotMatch(html, /Install link not available yet/);
     for (const resource of entry.resources) {
       assert.ok(html.includes(`contents-${resource.kind}`), `${entry.slug}: ${resource.kind}`);
     }
