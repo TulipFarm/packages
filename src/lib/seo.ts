@@ -89,7 +89,19 @@ export function packageSchema(entry: CatalogEntry) {
         license: 'https://github.com/TulipFarm/packages/blob/main/LICENSE',
         codeRepository: `https://github.com/TulipFarm/packages/tree/main/packages/${entry.slug}/${entry.version}`,
         image: absoluteUrl(`/social/${entry.slug}.png`),
+        keywords: [entry.category, ...entry.tags].join(', '),
+        isAccessibleForFree: true,
         publisher: { '@id': publisher['@id'] },
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': `${url}#faq`,
+        url,
+        mainEntity: content.questions.map(item => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: { '@type': 'Answer', text: item.answer },
+        })),
       },
     ],
   };

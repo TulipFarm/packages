@@ -1,0 +1,219 @@
+---
+import Site from '../../../layouts/Site.astro';
+import PackageContents from '../../../components/PackageContents';
+import { PackageBreadcrumb } from '../../../components/PackageMeta';
+import PackageTile from '../../../components/PackageTile';
+import ResourceIcon from '../../../components/ResourceIcon';
+import LinkButton from '../../../components/LinkButton';
+import TemplateIdentity, { styleLabel } from '../../../components/TemplateIdentity';
+import TemplateVisual from '../../../components/TemplateVisual';
+import { presentTemplate } from '../../../lib/presentation';
+import { latestEntries, loadCatalog, relatedEntries, type CatalogEntry } from '../../../lib/catalog';
+import { getPackageContent } from '../../../lib/package-content';
+import { packageSchema } from '../../../lib/seo';
+
+export async function getStaticPaths() {
+  const entries = latestEntries(await loadCatalog());
+  return entries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry, related: relatedEntries(entry, entries, getPackageContent(entry.slug).related) },
+  }));
+}
+interface Props {
+  entry: CatalogEntry;
+  related: CatalogEntry[];
+}
+const { entry, related } = Astro.props;
+const { document } = entry;
+const presentation = presentTemplate(entry);
+const content = getPackageContent(entry.slug);
+const installUrl = new URL('https://app.tulipfarm.ai/_chat');
+installUrl.search = new URLSearchParams({
+  intent: 'install-package',
+  packageName: entry.slug,
+  packageVersion: entry.version,
+}).toString();
+const assistant = entry.resources.find(resource => resource.kind === 'agent');
+const source = `https://github.com/TulipFarm/packages/tree/main/packages/${entry.slug}/${entry.version}`;
+---
+
+<Site
+  title={content.title}
+  description={content.description}
+  image={`/social/${entry.slug}.png`}
+  structuredData={packageSchema(entry)}
+>
+  <PackageBreadcrumb title={document.package.title} />
+  <header class="package-hero">
+    <div class="package-hero-copy">
+      <div class="package-title-group">
+        <TemplateIdentity slug={entry.slug} brand={presentation.brand} large />
+        <p class="eyebrow">
+          {entry.category}
+          {presentation.brand && ` / ${styleLabel(presentation.brand)}`}
+        </p>
+      </div>
+      <h1>{document.package.title}</h1>
+      <p class="package-outcome">{presentation.outcome}</p>
+      <p class="package-intro">{content.introduction}</p>
+      <div class="package-install-action">
+        <LinkButton href={installUrl.href}>Install to workspace</LinkButton>
+        <p id="install-link-status">
+          Opens a private chat in your default organisation. Review and approve before anything is installed.
+        </p>
+      </div>
+      <p class="hero-facts">
+        <span>v{entry.version}</span>
+        <span>{document.package.license} license</span>
+        <a href={source}>Source on GitHub</a>
+      </p>
+    </div>
+    <figure class="package-hero-preview">
+      <TemplateVisual data={presentation.visual} />
+      <figcaption>
+        Example data included with the package.
+        {presentation.brand && ' Third-party marks indicate workflow style, not an integration or endorsement.'}
+      </figcaption>
+    </figure>
+  </header>
+
+  {entry.automations.length > 0 && (
+    <section class="package-band automation-band" aria-labelledby="automations-heading">
+      <h2 id="automations-heading">What happens automatically</h2>
+      <p class="section-lede">
+        These run inside your workspace. Nothing is sent anywhere else, and people make every decision.
+      </p>
+      <ol class="automation-list">
+        {entry.automations.map(item => (
+          <li>
+            <p class="automation-when">{item.when}</p>
+            <h3>{item.title}</h3>
+            <p class="automation-table">
+              <ResourceIcon kind="table" />
+              {item.table}
+            </p>
+          </li>
+        ))}
+      </ol>
+      {assistant && (
+        <p class="assistant-note">
+          <ResourceIcon kind="agent" />
+          <span>
+            <strong>{assistant.title}</strong> reads your records when you ask, cites the rows it relies on and suggests
+            next steps. It never changes data.
+          </span>
+        </p>
+      )}
+    </section>
+  )}
+
+  <section class="package-band" aria-labelledby="fit-heading">
+    <h2 id="fit-heading">Is it right for you?</h2>
+    <div class="fit-grid">
+      <div class="fit-card">
+        <h3>Who it is for</h3>
+        <p>{content.audience}</p>
+        <ul class="fit-list">
+          {entry.useCases.map(useCase => (
+            <li>{useCase}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="fit-card fit-card-quiet">
+        <h3>What it does not do</h3>
+        <p>{content.limitations}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="package-band" aria-labelledby="usage-heading">
+    <h2 id="usage-heading">Getting started</h2>
+    <p class="section-lede">After installing, these steps take you from example data to your own.</p>
+    <ol class="step-list">
+      {content.steps.map(step => (
+        <li>{step}</li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="package-band" aria-labelledby="questions-heading">
+    <h2 id="questions-heading">Common questions</h2>
+    <div class="faq-list">
+      {content.questions.map(item => (
+        <details>
+          <summary>{item.question}</summary>
+          <p>{item.answer}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="package-band" aria-labelledby="related-heading">
+      <h2 id="related-heading">Related packages</h2>
+      <div class="related-grid">
+        {related.map(item => (
+          <PackageTile
+            entry={{
+              slug: item.slug,
+              title: item.document.package.title,
+              category: item.category,
+              detailPath: item.detailPath,
+              outcome: presentTemplate(item).outcome,
+            }}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="package-band technical-band" aria-labelledby="technical-heading">
+    <details class="technical-details">
+      <summary>
+        <h2 id="technical-heading">Technical details</h2>
+        <span class="technical-hint">Tables and fields, inputs, permissions and the package JSON</span>
+      </summary>
+      <div class="technical-body">
+        <div class="technical-contents">
+          <h3>What's included</h3>
+          <PackageContents resources={entry.resources} />
+        </div>
+        <div class="requirements">
+          <h3>Workspace inputs</h3>
+          <p class="small">Chosen when you install, not by this website.</p>
+          <dl>
+            {document.inputs.map(input => (
+              <div>
+                <dt>{input.title}</dt>
+                <dd>{input.kind.replaceAll('-', ' ')}</dd>
+              </div>
+            ))}
+          </dl>
+          <h3>Required capabilities</h3>
+          <ul>
+            {document.requires.capabilities.map(capability => (
+              <li>{capability.replaceAll('-', ' ')}</li>
+            ))}
+          </ul>
+          <h3>Declared outputs</h3>
+          <ul>
+            {document.outputs.map(output => (
+              <li>{entry.resources.find(resource => resource.key === output.resource.key)?.title ?? output.key}</li>
+            ))}
+          </ul>
+          <p class="small">
+            Review permissions before installing. Schema validation does not prove a successful install.
+          </p>
+        </div>
+        <div class="source-section">
+          <h3>Nothing hidden</h3>
+          <p class="small">This is the exact versioned definition. This site displays it and never runs it.</p>
+          <details>
+            <summary>Read the package JSON</summary>
+            <pre><code>{entry.raw}</code></pre>
+          </details>
+        </div>
+      </div>
+    </details>
+  </section>
+</Site>

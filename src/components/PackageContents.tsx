@@ -19,15 +19,15 @@ export default function PackageContents({ resources }: Pick<CatalogEntry, 'resou
         if (!items.length) return null;
         return (
           <section className="contents-group" key={group.kind} aria-labelledby={`contents-${group.kind}`}>
-            <h3 id={`contents-${group.kind}`}>
+            <h4 id={`contents-${group.kind}`}>
               <ResourceIcon kind={group.kind} />
               {group.title}
               <span>{items.length}</span>
-            </h3>
+            </h4>
             <ul>
               {items.map(resource => (
                 <li key={resource.key}>
-                  <h4>{resource.title}</h4>
+                  <h5>{resource.title}</h5>
                   <p>{resource.description}</p>
                 </li>
               ))}
