@@ -1,0 +1,4 @@
+# Package pages moved from /packages/<slug>/<version>/ to /packages/<slug>/.
+# Versioned JSON stays at /packages/<slug>/<version>/package.json.
+/packages/:slug/:version/ /packages/:slug/ 301
+/packages/:slug/:version /packages/:slug/ 301

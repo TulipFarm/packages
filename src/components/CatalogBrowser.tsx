@@ -25,10 +25,9 @@ import Code from 'reicon-react/icons/Code';
 import BookOpen from 'reicon-react/icons/BookOpen';
 import ArrowUpRight from 'reicon-react/icons/ArrowUpRight';
 import SidebarLeft from 'reicon-react/icons/SidebarLeft';
-import TemplateIdentity, { styleLabel } from './TemplateIdentity';
-import ResourceIcon from './ResourceIcon';
-import TemplateArtwork from './TemplateArtwork';
+import PackageTile from './PackageTile';
 import ThemeToggle from './ThemeToggle';
+import { categoryOrder } from '../lib/categories';
 import type { presentTemplate } from '../lib/presentation';
 
 export interface CatalogCard {
@@ -43,69 +42,12 @@ export interface CatalogCard {
   presentation: ReturnType<typeof presentTemplate>;
 }
 
-function TemplateCard({ entry }: { entry: CatalogCard }) {
-  return (
-    <Card className="market-card" render={<article />}>
-      <CardContent>
-        <TemplateArtwork slug={entry.slug} data={entry.presentation.visual} />
-      </CardContent>
-      <CardHeader>
-        <CardTitle
-          render={
-            <h3>
-              <a href={entry.detailPath}>{entry.title}</a>
-            </h3>
-          }
-        />
-        <CardDescription>{entry.presentation.outcome}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ul className="resource-counts" aria-label="Package contents">
-          {(['table', 'skill', 'agent', 'workflow'] as const)
-            .filter(kind => entry.counts[kind] > 0)
-            .map(kind => (
-              <li key={kind}>
-                <ResourceIcon kind={kind} />
-                <span>
-                  {entry.counts[kind]} {kind}
-                  {entry.counts[kind] === 1 ? '' : 's'}
-                </span>
-              </li>
-            ))}
-        </ul>
-      </CardContent>
-      <CardContent className="market-card-bottom">
-        <div className="market-publisher">
-          {entry.presentation.brand ? (
-            <>
-              <TemplateIdentity slug={entry.slug} brand={entry.presentation.brand} />
-              <div>
-                <span>{styleLabel(entry.presentation.brand).replace(' starter', '')}</span>
-                <small>Not affiliated</small>
-              </div>
-            </>
-          ) : (
-            <span>{entry.category}</span>
-          )}
-        </div>
-        <Button
-          variant="outline"
-          nativeButton={false}
-          render={<a href={entry.detailPath} aria-label={`Preview ${entry.title}`} />}
-        >
-          See preview
-        </Button>
-      </CardContent>
-    </Card>
-  );
-}
-
 export default function CatalogBrowser({ entries }: { entries: CatalogCard[] }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('All categories');
   const [sort, setSort] = useState('az');
   const [navigationOpen, setNavigationOpen] = useState(false);
-  const categories = [...new Set(entries.map(entry => entry.category))].sort();
+  const categories = categoryOrder.filter(item => entries.some(entry => entry.category === item));
   const reset = () => {
     setQuery('');
     setCategory('All categories');
@@ -122,16 +64,7 @@ export default function CatalogBrowser({ entries }: { entries: CatalogCard[] }) 
     .sort((a, b) => (sort === 'az' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)));
   const browsing = category === 'All categories' && !query.trim();
   const shelves = browsing
-    ? [
-        {
-          title: 'For your team',
-          entries: matches.filter(entry => ['HR', 'Sales', 'Support'].includes(entry.category)),
-        },
-        {
-          title: 'For product & content',
-          entries: matches.filter(entry => !['HR', 'Sales', 'Support'].includes(entry.category)),
-        },
-      ]
+    ? categories.map(item => ({ title: item, entries: matches.filter(entry => entry.category === item) }))
     : [{ title: category === 'All categories' ? 'Search results' : `${category} packages`, entries: matches }];
 
   return (
@@ -348,7 +281,10 @@ export default function CatalogBrowser({ entries }: { entries: CatalogCard[] }) 
                   <h2>{shelf.title}</h2>
                   <div className="market-grid">
                     {shelf.entries.map(entry => (
-                      <TemplateCard entry={entry} key={`${entry.slug}/${entry.version}`} />
+                      <PackageTile
+                        entry={{ ...entry, outcome: entry.presentation.outcome }}
+                        key={`${entry.slug}/${entry.version}`}
+                      />
                     ))}
                   </div>
                 </section>
@@ -369,10 +305,6 @@ export default function CatalogBrowser({ entries }: { entries: CatalogCard[] }) 
               </CardContent>
             </Card>
           )}
-          <p className="catalog-disclaimer">
-            Jira, Linear and Zendesk marks identify workflow styles, not integrations or endorsements. These starters
-            are not full replacements.
-          </p>
           <section className="market-how" id="how-it-works">
             <h2>A starting point. Not a black box.</h2>
             <p>Every package includes tables, skills, agents and workflows in one open-source JSON file.</p>

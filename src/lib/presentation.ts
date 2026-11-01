@@ -1,4 +1,5 @@
 import type { CatalogEntry } from './catalog';
+import { packageContent } from './package-content';
 
 type Brand = 'jira' | 'linear' | 'zendesk';
 export interface TemplatePresentation {
@@ -42,6 +43,66 @@ const presentations: Record<string, TemplatePresentation> = {
     table: 'leave-requests',
     layout: 'records',
   },
+  'sprint-issue-tracker': {
+    outcome: 'Triage, plan and ship engineering work with a full history.',
+    table: 'issues',
+    layout: 'board',
+  },
+  'sla-ticket-desk': {
+    outcome: 'Answer customers on time with SLAs, escalations and ratings.',
+    table: 'tickets',
+    layout: 'records',
+  },
+  'it-incident-desk': {
+    outcome: 'Run incidents, problems and changes with approvals built in.',
+    table: 'incidents',
+    layout: 'records',
+  },
+  'team-wiki': {
+    outcome: 'Keep team docs owned, reviewed and current.',
+    table: 'pages',
+    layout: 'records',
+  },
+  'client-retainers': {
+    outcome: 'Deliver client work and bill every hour.',
+    table: 'projects',
+    layout: 'records',
+  },
+  'portfolio-planner': {
+    outcome: 'Plan projects and catch slipping work early.',
+    table: 'tasks',
+    layout: 'board',
+  },
+  'deal-pipeline': {
+    outcome: 'Move deals forward and never lose a renewal.',
+    table: 'deals',
+    layout: 'board',
+  },
+  'hiring-pipeline': {
+    outcome: 'Hire with structured interviews and approved offers.',
+    table: 'applications',
+    layout: 'board',
+  },
+  'product-roadmap': {
+    outcome: 'Turn customer evidence into a roadmap you can defend.',
+    table: 'features',
+    layout: 'board',
+  },
+  'account-health': {
+    outcome: 'Spot account risk early and renew with confidence.',
+    table: 'accounts',
+    layout: 'records',
+  },
+  'employee-lifecycle': {
+    outcome: 'Keep people records, onboarding and reviews on track.',
+    table: 'employees',
+    layout: 'records',
+  },
+  'compliance-controls': {
+    outcome: 'Keep controls, evidence and risks audit-ready.',
+    table: 'controls',
+    layout: 'records',
+  },
 };
 
 export interface TemplateVisualData {
@@ -55,12 +116,19 @@ export interface TemplateVisualData {
 
 export function presentTemplate(entry: CatalogEntry) {
   const presentation = presentations[entry.slug] ?? {
-    outcome: entry.useCases[0] ?? entry.document.package.description,
+    outcome: packageContent[entry.slug]?.outcome ?? entry.useCases[0] ?? entry.document.package.description,
     table: '',
     layout: 'records' as const,
   };
   const tables = entry.document.resources.filter(resource => resource.kind === 'table');
-  const table = tables.find(resource => resource.key === presentation.table) ?? tables[0];
+  const seeds = entry.document.resources.filter(resource => resource.kind === 'seed-row');
+  const seedCount = (key: string) => seeds.filter(row => row.table?.key === key).length;
+  const table =
+    tables.find(resource => resource.key === presentation.table) ??
+    tables.reduce<(typeof tables)[number] | undefined>(
+      (best, candidate) => (!best || seedCount(candidate.key) > seedCount(best.key) ? candidate : best),
+      undefined,
+    );
   const titleField = table?.fields?.find(field => field.kind === 'text');
   const statusField = table?.fields?.find(field => field.key === 'status' || field.key === 'stage');
   const visual: TemplateVisualData = {
@@ -69,9 +137,9 @@ export function presentTemplate(entry: CatalogEntry) {
     statusLabel: statusField?.label ?? 'Status',
     tables: tables.map(resource => resource.label ?? resource.key),
     layout: presentation.layout,
-    rows: entry.document.resources
-      .filter(resource => resource.kind === 'seed-row' && resource.table?.key === table?.key)
-      .slice(0, 2)
+    rows: seeds
+      .filter(row => row.table?.key === table?.key)
+      .slice(0, 3)
       .map(row => {
         const title = titleField && row.values?.[titleField.key]?.value;
         const option = statusField && row.values?.[statusField.key]?.option;

@@ -24,7 +24,7 @@
   {
     "slug": "support-desk",
     "version": "1.0.0",
-    "category": "Support",
+    "category": "Support & success",
     "tags": ["tickets", "triage", "customer-support"],
     "useCases": [
       "Triage tickets by queue and priority",
@@ -35,7 +35,7 @@
   {
     "slug": "leave-management",
     "version": "1.0.0",
-    "category": "HR",
+    "category": "People & HR",
     "tags": ["time-off", "balances", "approvals"],
     "useCases": [
       "Review requested days against recorded balances",
@@ -46,7 +46,7 @@
   {
     "slug": "project-tracking",
     "version": "1.0.0",
-    "category": "Engineering",
+    "category": "Product & engineering",
     "tags": ["sprints", "issues", "delivery"],
     "useCases": [
       "Review sprint scope and blockers",
@@ -57,12 +57,1167 @@
   {
     "slug": "product-backlog",
     "version": "1.0.0",
-    "category": "Product",
+    "category": "Product & engineering",
     "tags": ["roadmap", "feedback", "prioritization"],
     "useCases": [
       "Triage feedback into a product backlog",
       "Compare work against initiative outcomes",
       "Prepare an evidence-based priority review"
+    ]
+  },
+  {
+    "slug": "sprint-issue-tracker",
+    "version": "1.0.0",
+    "category": "Product & engineering",
+    "tags": ["issues", "sprints", "releases", "jira-alternative", "linear-alternative"],
+    "useCases": [
+      "Triage, plan and ship issues across projects, sprints and releases",
+      "Keep an automatic status history and flag overdue or blocked issues",
+      "Prepare sprint reviews and release readiness with cited evidence"
+    ]
+  },
+  {
+    "slug": "client-retainers",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["agency", "psa", "timesheets", "invoicing", "productive-alternative"],
+    "useCases": [
+      "Track client projects, retainers, time and invoices in one place",
+      "Flag overdue invoices and at-risk projects automatically",
+      "Review project budgets, utilisation and retainer burn with evidence"
+    ]
+  },
+  {
+    "slug": "deal-pipeline",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["crm", "pipeline", "deals", "hubspot-alternative", "pipedrive-alternative"],
+    "useCases": [
+      "Track companies, contacts and deals through pipeline stages",
+      "Record stage changes and open renewals when deals are won",
+      "Review pipeline health and stalled deals with cited evidence"
+    ]
+  },
+  {
+    "slug": "it-incident-desk",
+    "version": "1.0.0",
+    "category": "IT & security",
+    "tags": ["itsm", "incidents", "change-management", "cmdb", "servicenow-alternative"],
+    "useCases": [
+      "Track incidents, problems and changes against services and configuration items",
+      "Route change requests through an approval step before scheduling",
+      "Review major incidents and recurring problems with cited evidence"
+    ]
+  },
+  {
+    "slug": "team-wiki",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["wiki", "documentation", "knowledge-base", "confluence-alternative", "notion-alternative"],
+    "useCases": [
+      "Organise team pages into spaces with named owners",
+      "Route pages through review and flag stale pages automatically",
+      "Answer questions and find documentation gaps from the wiki"
+    ]
+  },
+  {
+    "slug": "sla-ticket-desk",
+    "version": "1.0.0",
+    "category": "Support & success",
+    "tags": ["help-desk", "tickets", "sla", "zendesk-alternative", "freshdesk-alternative"],
+    "useCases": [
+      "Triage and resolve customer tickets against SLA policies",
+      "Escalate urgent tickets and flag SLA breaches automatically",
+      "Request satisfaction ratings and review support quality with evidence"
+    ]
+  },
+  {
+    "slug": "portfolio-planner",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["tasks", "portfolios", "milestones", "asana-alternative", "monday-alternative"],
+    "useCases": [
+      "Plan projects with tasks, milestones and owners across portfolios",
+      "Flag overdue tasks and missed milestones automatically",
+      "Prepare weekly status reports and workload reviews with evidence"
+    ]
+  },
+  {
+    "slug": "account-health",
+    "version": "1.0.0",
+    "category": "Support & success",
+    "tags": ["customer-success", "health-score", "renewals", "gainsight-alternative", "vitally-alternative"],
+    "useCases": [
+      "Track account health, plays, business reviews and renewals",
+      "Open risks when health turns red and flag renewal windows",
+      "Prepare account reviews and renewal risk summaries with evidence"
+    ]
+  },
+  {
+    "slug": "compliance-controls",
+    "version": "1.0.0",
+    "category": "Legal & compliance",
+    "tags": ["grc", "compliance", "soc2", "iso27001", "vanta-alternative"],
+    "useCases": [
+      "Map controls to policies, evidence and owners for SOC 2 or ISO 27001",
+      "Open risks for failing controls and flag expiring evidence",
+      "Prepare audit readiness reviews with cited evidence"
+    ]
+  },
+  {
+    "slug": "employee-lifecycle",
+    "version": "1.0.0",
+    "category": "People & HR",
+    "tags": ["hris", "onboarding", "employees", "bamboohr-alternative", "people-ops"],
+    "useCases": [
+      "Keep employee, role and document records in one place",
+      "Open onboarding and offboarding tasks automatically",
+      "Review overdue performance reviews and expiring documents"
+    ]
+  },
+  {
+    "slug": "product-roadmap",
+    "version": "1.0.0",
+    "category": "Product & engineering",
+    "tags": ["roadmap", "feedback", "features", "productboard-alternative", "aha-alternative"],
+    "useCases": [
+      "Link customer insights to features, objectives and releases",
+      "Record feature status changes and sign off on planned work",
+      "Review roadmap evidence and late releases with citations"
+    ]
+  },
+  {
+    "slug": "hiring-pipeline",
+    "version": "1.0.0",
+    "category": "People & HR",
+    "tags": ["recruiting", "ats", "hiring", "greenhouse-alternative", "lever-alternative"],
+    "useCases": [
+      "Track candidates through hiring stages for each job opening",
+      "Chase late scorecards and route offers through approval",
+      "Review a hiring pipeline and interview feedback with evidence"
+    ]
+  },
+  {
+    "slug": "client-onboarding",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["onboarding", "kickoff", "clients", "agency"],
+    "useCases": [
+      "Run every new client through the same kickoff checklist",
+      "Track access, brand assets and contacts the team still needs",
+      "Spot late onboarding tasks before the first deliverable is due"
+    ]
+  },
+  {
+    "slug": "change-requests",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["change-requests", "scope", "approvals", "agency"],
+    "useCases": [
+      "Estimate every scope change before work starts",
+      "Get client approval on record for each change",
+      "Keep a log of approved changes for billing"
+    ]
+  },
+  {
+    "slug": "client-commitments",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["commitments", "client-calls", "accountability", "agency"],
+    "useCases": [
+      "Capture promises made on client calls with an owner",
+      "See which commitments are overdue before the client asks",
+      "Escalate broken promises to the account lead"
+    ]
+  },
+  {
+    "slug": "client-health",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["client-health", "check-ins", "retention", "agency"],
+    "useCases": [
+      "Hold a check-in with every client each month",
+      "Escalate clients the moment they turn at risk",
+      "See which clients have gone quiet"
+    ]
+  },
+  {
+    "slug": "client-reporting",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["reporting", "kpis", "monthly-reports", "agency"],
+    "useCases": [
+      "Open every monthly report with the same sections",
+      "See which client reports are late or still in draft",
+      "Keep each client’s KPIs next to the report that covers them"
+    ]
+  },
+  {
+    "slug": "content-production",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["content", "writers", "editorial", "agency"],
+    "useCases": [
+      "Turn every approved brief into a tracked draft",
+      "See each draft’s review history at a glance",
+      "Catch drafts that miss their due date"
+    ]
+  },
+  {
+    "slug": "creative-approvals",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["creative", "approvals", "feedback", "agency"],
+    "useCases": [
+      "Get client sign-off on record for every creative asset",
+      "Count the review rounds each asset has taken",
+      "Keep all feedback for an asset in one history"
+    ]
+  },
+  {
+    "slug": "freelancer-roster",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["freelancers", "contractors", "availability", "agency"],
+    "useCases": [
+      "Find an available freelancer with the right skill",
+      "Renew freelancer contracts before they lapse",
+      "See what each freelancer is booked on"
+    ]
+  },
+  {
+    "slug": "new-business-pitches",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["new-business", "pitches", "rfp", "agency"],
+    "useCases": [
+      "Run every pitch with the same task list",
+      "See pitches with a deadline in the next three days",
+      "Keep a record of wins, losses and the reasons"
+    ]
+  },
+  {
+    "slug": "pr-media-relations",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["pr", "media-relations", "pitching", "coverage"],
+    "useCases": [
+      "Know which journalists need a follow-up today",
+      "Log every piece of coverage against the pitch that won it",
+      "Keep outlet and journalist notes for the whole team"
+    ]
+  },
+  {
+    "slug": "resource-capacity",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["capacity", "resourcing", "allocations", "agency"],
+    "useCases": [
+      "See who is over-allocated before the week starts",
+      "Plan weekly hours across client projects",
+      "Find cover when someone becomes unavailable"
+    ]
+  },
+  {
+    "slug": "seo-agency-ops",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["seo", "keywords", "deliverables", "agency"],
+    "useCases": [
+      "Track audits, briefs and links owed to each SEO client",
+      "Watch keyword targets and catch ranking drops early",
+      "See late SEO work before the monthly client call"
+    ]
+  },
+  {
+    "slug": "statements-of-work",
+    "version": "1.0.0",
+    "category": "Agency & client services",
+    "tags": ["sow", "contracts", "milestones", "agency"],
+    "useCases": [
+      "See every live statement of work and what it promises",
+      "Get sign-off on record before work starts",
+      "Renew or close statements before they expire"
+    ]
+  },
+  {
+    "slug": "bills-payable",
+    "version": "1.0.0",
+    "category": "Finance",
+    "tags": ["accounts-payable", "bills", "vendors", "approvals"],
+    "useCases": [
+      "Pay every supplier bill before it is late",
+      "Approve bills before they go into a payment run",
+      "See what cash goes out in each payment run"
+    ]
+  },
+  {
+    "slug": "budget-tracking",
+    "version": "1.0.0",
+    "category": "Finance",
+    "tags": ["budgeting", "variance", "cost-centers", "spend"],
+    "useCases": [
+      "Catch overspending while there is still time to act",
+      "Explain every variance against budget",
+      "Give each cost center owner a clear spend view"
+    ]
+  },
+  {
+    "slug": "cash-forecast",
+    "version": "1.0.0",
+    "category": "Finance",
+    "tags": ["cash-flow", "forecasting", "treasury", "runway"],
+    "useCases": [
+      "See low-cash weeks before they arrive",
+      "Know which payments could be deferred",
+      "Review the cash forecast every week"
+    ]
+  },
+  {
+    "slug": "expense-claims",
+    "version": "1.0.0",
+    "category": "Finance",
+    "tags": ["expenses", "reimbursement", "approvals", "receipts"],
+    "useCases": [
+      "Approve over-limit expense claims deliberately",
+      "Chase missing receipts before month end",
+      "Check claims against the expense policy"
+    ]
+  },
+  {
+    "slug": "investor-updates",
+    "version": "1.0.0",
+    "category": "Finance",
+    "tags": ["investor-relations", "updates", "fundraising", "founders"],
+    "useCases": [
+      "Send investor updates on a steady schedule",
+      "Track every ask and who offered to help",
+      "Keep one list of current and prospective investors"
+    ]
+  },
+  {
+    "slug": "invoice-collections",
+    "version": "1.0.0",
+    "category": "Finance",
+    "tags": ["accounts-receivable", "invoices", "collections", "cash"],
+    "useCases": [
+      "Get paid faster on overdue invoices",
+      "Keep a record of every reminder sent",
+      "Resolve invoice disputes before they age"
+    ]
+  },
+  {
+    "slug": "month-end-close",
+    "version": "1.0.0",
+    "category": "Finance",
+    "tags": ["month-end", "close", "reconciliation", "accounting"],
+    "useCases": [
+      "Close the books on the same day every month",
+      "See which close tasks are late or blocked",
+      "Investigate reconciliation differences before sign-off"
+    ]
+  },
+  {
+    "slug": "saas-subscriptions",
+    "version": "1.0.0",
+    "category": "Finance",
+    "tags": ["saas", "subscriptions", "renewals", "software-spend"],
+    "useCases": [
+      "Decide on every renewal before the notice date",
+      "Cut unused seats before they renew",
+      "Know who owns each software subscription"
+    ]
+  },
+  {
+    "slug": "construction-punch-list",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["construction", "punch-list", "snagging", "handover"],
+    "useCases": [
+      "Close out every snag before handover",
+      "Hold each trade to the dates they agreed",
+      "Get inspections and sign-offs recorded, not remembered"
+    ]
+  },
+  {
+    "slug": "ecommerce-orders",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["ecommerce", "orders", "returns", "refunds"],
+    "useCases": [
+      "Resolve every problem order before the customer chases",
+      "Approve refunds only after the return arrives",
+      "See stuck exceptions before they become complaints"
+    ]
+  },
+  {
+    "slug": "grant-applications",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["nonprofit", "grants", "funders", "reporting"],
+    "useCases": [
+      "Never miss a grant deadline",
+      "Know which reports each award owes and when",
+      "Keep every funder relationship and application in one place"
+    ]
+  },
+  {
+    "slug": "nonprofit-donors",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["nonprofit", "donors", "fundraising", "stewardship"],
+    "useCases": [
+      "Thank every donor promptly after each gift",
+      "Spot donors who have lapsed before they drift away",
+      "See each donor’s giving history in one record"
+    ]
+  },
+  {
+    "slug": "product-catalog",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["ecommerce", "product-data", "catalog", "merchandising"],
+    "useCases": [
+      "Launch products with complete, checked data",
+      "See which products are missing descriptions, images or prices",
+      "Keep variants and SKUs tidy in one place"
+    ]
+  },
+  {
+    "slug": "property-maintenance",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["property-management", "maintenance", "rentals", "vendors"],
+    "useCases": [
+      "Log every tenant repair request against the right unit",
+      "Route emergencies to the property manager straight away",
+      "See which repairs are overdue and which vendor holds them"
+    ]
+  },
+  {
+    "slug": "real-estate-listings",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["real-estate", "listings", "showings", "offers"],
+    "useCases": [
+      "Keep every listing, showing and offer in one shared record",
+      "Collect buyer feedback after each showing",
+      "Review new offers with the seller without missing one"
+    ]
+  },
+  {
+    "slug": "volunteer-scheduling",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["volunteers", "scheduling", "nonprofit", "shifts"],
+    "useCases": [
+      "Fill every volunteer shift before the day",
+      "Spot understaffed shifts while there is time to recruit",
+      "Replace volunteers who cancel without losing track"
+    ]
+  },
+  {
+    "slug": "course-planning",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["education", "courses", "cohorts", "enrolment"],
+    "useCases": [
+      "Plan every cohort with its sessions and instructors",
+      "Decide early whether an under-enrolled cohort should run",
+      "Keep attendance records complete after each session"
+    ]
+  },
+  {
+    "slug": "event-planning",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["events", "vendors", "budget", "planning"],
+    "useCases": [
+      "Keep every event task, vendor and cost in one place",
+      "Catch overdue planning tasks before event day",
+      "Spot budget lines running over before invoices arrive"
+    ]
+  },
+  {
+    "slug": "field-service-jobs",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["field-service", "dispatch", "technicians", "maintenance"],
+    "useCases": [
+      "Know which jobs each technician has today and what is late",
+      "Call every customer back after a job is finished",
+      "Get emergency call-outs in front of dispatch at once"
+    ]
+  },
+  {
+    "slug": "fleet-maintenance",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["fleet", "vehicles", "maintenance", "safety"],
+    "useCases": [
+      "See which vehicles are due or overdue for service",
+      "Keep vehicles with safety defects off the road",
+      "Sign off every repair before a vehicle returns to duty"
+    ]
+  },
+  {
+    "slug": "hotel-housekeeping",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["hospitality", "housekeeping", "inspections", "hotel"],
+    "useCases": [
+      "See which rooms are clean, inspected and ready to sell",
+      "Inspect every cleaned room before it goes back on sale",
+      "Get out-of-order rooms fixed before they cost bookings"
+    ]
+  },
+  {
+    "slug": "law-firm-matters",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["legal", "matter-intake", "conflicts", "deadlines"],
+    "useCases": [
+      "Clear a conflict check before work starts on a matter",
+      "Keep every court and filing deadline in view",
+      "See new matters waiting on intake in one list"
+    ]
+  },
+  {
+    "slug": "manufacturing-quality",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["quality", "manufacturing", "capa", "nonconformance"],
+    "useCases": [
+      "Log every nonconformance with its severity and containment",
+      "Open a corrective action for every major defect",
+      "Close CAPAs only after an effectiveness check"
+    ]
+  },
+  {
+    "slug": "school-admissions",
+    "version": "1.0.0",
+    "category": "Industry",
+    "tags": ["education", "admissions", "interviews", "school"],
+    "useCases": [
+      "Track every application from enquiry to decision",
+      "Make sure each applicant gets an interview on time",
+      "Approve every admission decision before it is released"
+    ]
+  },
+  {
+    "slug": "access-requests",
+    "version": "1.0.0",
+    "category": "IT & security",
+    "tags": ["access-management", "access-reviews", "least-privilege", "audit"],
+    "useCases": [
+      "Get manager approval on every system access request",
+      "Run quarterly access reviews on schedule with evidence",
+      "Spot temporary access that should have been removed"
+    ]
+  },
+  {
+    "slug": "laptop-provisioning",
+    "version": "1.0.0",
+    "category": "IT & security",
+    "tags": ["devices", "provisioning", "it-assets", "onboarding"],
+    "useCases": [
+      "Set up every new laptop with the same security checklist",
+      "Know who has each device and when it is due back",
+      "Chase overdue returns from leavers and contractors"
+    ]
+  },
+  {
+    "slug": "security-awareness",
+    "version": "1.0.0",
+    "category": "IT & security",
+    "tags": ["security-training", "phishing", "awareness", "compliance"],
+    "useCases": [
+      "Assign required security training and see who has finished",
+      "Flag overdue training before an audit",
+      "Follow every phishing simulation with a refresher"
+    ]
+  },
+  {
+    "slug": "vendor-security-reviews",
+    "version": "1.0.0",
+    "category": "IT & security",
+    "tags": ["vendor-risk", "security-reviews", "third-party-risk", "questionnaires"],
+    "useCases": [
+      "Review every new vendor before it gets customer data",
+      "Escalate critical findings to the security lead at once",
+      "Re-review critical vendors on schedule"
+    ]
+  },
+  {
+    "slug": "vulnerability-tracker",
+    "version": "1.0.0",
+    "category": "IT & security",
+    "tags": ["vulnerabilities", "remediation", "sla", "patching"],
+    "useCases": [
+      "Fix vulnerabilities within a deadline set by severity",
+      "See every SLA breach before an auditor does",
+      "Approve risk exceptions with a reason and an expiry"
+    ]
+  },
+  {
+    "slug": "contract-tracker",
+    "version": "1.0.0",
+    "category": "Legal & compliance",
+    "tags": ["contracts", "renewals", "obligations", "contract-management"],
+    "useCases": [
+      "Never miss a contract notice deadline",
+      "Decide to renew, renegotiate or terminate in good time",
+      "Keep track of what each contract requires of both sides"
+    ]
+  },
+  {
+    "slug": "data-subject-requests",
+    "version": "1.0.0",
+    "category": "Legal & compliance",
+    "tags": ["privacy", "gdpr", "dsar", "data-protection"],
+    "useCases": [
+      "Answer every privacy request before its statutory deadline",
+      "Verify identity before any personal data is released",
+      "Show which systems were searched for each request"
+    ]
+  },
+  {
+    "slug": "nda-requests",
+    "version": "1.0.0",
+    "category": "Legal & compliance",
+    "tags": ["nda", "legal-requests", "confidentiality", "contracts"],
+    "useCases": [
+      "Give the business one place to ask for an NDA",
+      "Make sure legal reviews every NDA before it is signed",
+      "Know which NDAs are in force and when they expire"
+    ]
+  },
+  {
+    "slug": "policy-attestations",
+    "version": "1.0.0",
+    "category": "Legal & compliance",
+    "tags": ["policies", "attestations", "compliance", "governance"],
+    "useCases": [
+      "Show that every employee has read and accepted key policies",
+      "Chase overdue attestations before an audit",
+      "Approve exemptions with a clear owner"
+    ]
+  },
+  {
+    "slug": "risk-register",
+    "version": "1.0.0",
+    "category": "Legal & compliance",
+    "tags": ["risk-management", "controls", "governance", "compliance"],
+    "useCases": [
+      "Keep one up-to-date list of the risks that matter",
+      "Escalate critical risks to the people who can act",
+      "Review each risk on schedule, with the history kept"
+    ]
+  },
+  {
+    "slug": "brand-assets",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["brand", "digital-assets", "usage-rights", "licensing"],
+    "useCases": [
+      "Find the approved version of every brand asset",
+      "Know which assets you are licensed to use and where",
+      "Pull assets before their usage rights expire"
+    ]
+  },
+  {
+    "slug": "case-studies",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["case-studies", "customer-marketing", "approvals", "content"],
+    "useCases": [
+      "Keep a shortlist of customers ready to tell their story",
+      "Move each case study from interview to approved draft",
+      "Never publish a story the customer has not approved"
+    ]
+  },
+  {
+    "slug": "email-newsletter",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["newsletter", "email-marketing", "editorial", "content"],
+    "useCases": [
+      "Plan every newsletter issue from a shared pool of story ideas",
+      "See which issues are late for their send date",
+      "Keep send results next to the issue that produced them"
+    ]
+  },
+  {
+    "slug": "influencer-program",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["influencer-marketing", "creators", "partnerships", "deliverables"],
+    "useCases": [
+      "Keep every creator deal, deliverable and payment together",
+      "Review creator content before it goes live",
+      "Pay creators on time when the work is done"
+    ]
+  },
+  {
+    "slug": "market-research",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["market-research", "customer-insights", "competitive-analysis", "evidence"],
+    "useCases": [
+      "Tie every research finding to a question and a source",
+      "Review findings before the team relies on them",
+      "See what is known, and how confidently, before deciding"
+    ]
+  },
+  {
+    "slug": "product-launch-gtm",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["product-launch", "go-to-market", "launch-readiness", "marketing"],
+    "useCases": [
+      "Run every launch from one shared readiness plan",
+      "See overdue launch work across product, sales and support",
+      "Hold a clear go/no-go decision before launch day"
+    ]
+  },
+  {
+    "slug": "seo-keyword-plan",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["seo", "keyword-research", "content-planning", "rankings"],
+    "useCases": [
+      "Map every target keyword to one page",
+      "Track ranking movement over time",
+      "Catch pages competing for the same keyword"
+    ]
+  },
+  {
+    "slug": "social-media-planner",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["social-media", "content-calendar", "approvals", "campaigns"],
+    "useCases": [
+      "Plan every social post on one calendar",
+      "Get posts approved before they are scheduled",
+      "Catch posts that are not ready the day before they go out"
+    ]
+  },
+  {
+    "slug": "webinar-program",
+    "version": "1.0.0",
+    "category": "Marketing",
+    "tags": ["webinars", "events", "registrations", "demand-generation"],
+    "useCases": [
+      "Prepare every webinar from the same checklist",
+      "Keep speakers, registrations and follow-ups in one place",
+      "Follow up with no-shows instead of losing them"
+    ]
+  },
+  {
+    "slug": "decision-log",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["decisions", "meetings", "action-items", "accountability"],
+    "useCases": [
+      "Find out what was decided, when and by whom",
+      "Turn every decision into owned action items",
+      "Catch overdue actions before the next meeting"
+    ]
+  },
+  {
+    "slug": "equipment-assets",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["assets", "equipment", "maintenance", "asset-register"],
+    "useCases": [
+      "Know where every piece of equipment is and who holds it",
+      "Service equipment on schedule instead of after it breaks",
+      "Get loaned equipment back on time"
+    ]
+  },
+  {
+    "slug": "facilities-requests",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["facilities", "maintenance-requests", "office", "contractors"],
+    "useCases": [
+      "Give staff one place to report building problems",
+      "Get urgent problems in front of the facilities manager",
+      "See which requests have missed their target date"
+    ]
+  },
+  {
+    "slug": "inventory-stock",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["inventory", "stock", "reorders", "warehouse"],
+    "useCases": [
+      "See stock on hand for every item and location",
+      "Reorder before items run out",
+      "Catch count discrepancies before they become write-offs"
+    ]
+  },
+  {
+    "slug": "okr-goals",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["okrs", "goals", "check-ins", "planning"],
+    "useCases": [
+      "Keep every objective tied to measurable key results",
+      "See which key results are slipping before the quarter ends",
+      "Hold owners to a regular check-in rhythm"
+    ]
+  },
+  {
+    "slug": "procurement-requests",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["procurement", "purchasing", "approvals", "purchase-orders"],
+    "useCases": [
+      "Collect every purchase request with a reason and budget",
+      "Send large purchases to finance before money is committed",
+      "Track each approved request through to a purchase order"
+    ]
+  },
+  {
+    "slug": "sop-library",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["sops", "procedures", "process-documentation", "acknowledgements"],
+    "useCases": [
+      "Keep one current version of every procedure",
+      "Review each SOP on a fixed cycle so nothing goes stale",
+      "Know who has read and acknowledged each procedure"
+    ]
+  },
+  {
+    "slug": "vendor-management",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["vendors", "suppliers", "contracts", "performance"],
+    "useCases": [
+      "Know every supplier, owner and contract in one list",
+      "Review supplier performance on a regular cycle",
+      "Decide on renewals before the notice date passes"
+    ]
+  },
+  {
+    "slug": "weekly-ops-review",
+    "version": "1.0.0",
+    "category": "Operations",
+    "tags": ["weekly-review", "operations", "metrics", "issues"],
+    "useCases": [
+      "Run the same operations review every week",
+      "Keep unresolved issues visible until they are closed",
+      "Turn each review into owned actions"
+    ]
+  },
+  {
+    "slug": "employee-referrals",
+    "version": "1.0.0",
+    "category": "People & HR",
+    "tags": ["referrals", "recruiting", "bonuses", "hiring"],
+    "useCases": [
+      "Respond to every referral quickly",
+      "Pay referral bonuses on time after probation",
+      "See which roles get the most referrals"
+    ]
+  },
+  {
+    "slug": "headcount-planning",
+    "version": "1.0.0",
+    "category": "People & HR",
+    "tags": ["headcount", "workforce-planning", "approvals", "budget"],
+    "useCases": [
+      "Get every new position approved before hiring starts",
+      "Compare planned hiring cost with the budget",
+      "Spot approved roles that will start late"
+    ]
+  },
+  {
+    "slug": "hr-policy-questions",
+    "version": "1.0.0",
+    "category": "People & HR",
+    "tags": ["hr-policy", "employee-questions", "handbook", "hr-support"],
+    "useCases": [
+      "Give employees the same answer to the same policy question",
+      "Send sensitive questions straight to HR",
+      "See which policies cause the most questions"
+    ]
+  },
+  {
+    "slug": "one-on-ones",
+    "version": "1.0.0",
+    "category": "People & HR",
+    "tags": ["one-on-ones", "managers", "meetings", "follow-ups"],
+    "useCases": [
+      "Keep a running agenda between manager and report",
+      "Make sure promised follow-ups actually happen",
+      "Notice early when someone is struggling"
+    ]
+  },
+  {
+    "slug": "performance-reviews",
+    "version": "1.0.0",
+    "category": "People & HR",
+    "tags": ["performance", "reviews", "calibration", "goals"],
+    "useCases": [
+      "Finish every review in the cycle before the deadline",
+      "See which goals were achieved, missed or at risk",
+      "Bring consistent evidence into calibration meetings"
+    ]
+  },
+  {
+    "slug": "pulse-surveys",
+    "version": "1.0.0",
+    "category": "People & HR",
+    "tags": ["engagement", "surveys", "feedback", "employee-experience"],
+    "useCases": [
+      "Turn low survey scores into owned actions",
+      "Show employees what changed after each survey",
+      "Track engagement themes from one survey to the next"
+    ]
+  },
+  {
+    "slug": "training-plans",
+    "version": "1.0.0",
+    "category": "People & HR",
+    "tags": ["training", "certifications", "learning", "compliance"],
+    "useCases": [
+      "Never miss a certification renewal",
+      "Track who is enrolled in which course",
+      "Plan the training budget per course"
+    ]
+  },
+  {
+    "slug": "feature-rollouts",
+    "version": "1.0.0",
+    "category": "Product & engineering",
+    "tags": ["feature-flags", "rollouts", "guardrails", "release-management"],
+    "useCases": [
+      "Roll features out in stages with a record of every step",
+      "Decide on rollback as soon as a guardrail metric is breached",
+      "Clean up flags that stayed on past their removal date"
+    ]
+  },
+  {
+    "slug": "incident-postmortems",
+    "version": "1.0.0",
+    "category": "Product & engineering",
+    "tags": ["postmortems", "incidents", "reliability", "action-items"],
+    "useCases": [
+      "Write a postmortem for every resolved production incident",
+      "Track postmortem action items to done",
+      "Spot overdue fixes before the same incident happens again"
+    ]
+  },
+  {
+    "slug": "on-call-handoffs",
+    "version": "1.0.0",
+    "category": "Product & engineering",
+    "tags": ["on-call", "handoffs", "alerts", "sre"],
+    "useCases": [
+      "Write a handoff note at the end of every on-call shift",
+      "Carry open alerts and risks over to the next engineer",
+      "Catch handoffs nobody acknowledged"
+    ]
+  },
+  {
+    "slug": "prd-specs",
+    "version": "1.0.0",
+    "category": "Product & engineering",
+    "tags": ["prd", "product-specs", "requirements", "decisions"],
+    "useCases": [
+      "Keep every spec, its requirements and its decisions in one place",
+      "Ask reviewers to review a spec as soon as it is ready",
+      "See which spec reviews are overdue before planning starts"
+    ]
+  },
+  {
+    "slug": "release-notes",
+    "version": "1.0.0",
+    "category": "Product & engineering",
+    "tags": ["release-notes", "changelog", "releases", "product-updates"],
+    "useCases": [
+      "Collect every customer-facing change before a release ships",
+      "Draft notes per audience and channel from one list of changes",
+      "Get approval before release notes are published"
+    ]
+  },
+  {
+    "slug": "tech-debt-register",
+    "version": "1.0.0",
+    "category": "Product & engineering",
+    "tags": ["tech-debt", "engineering", "architecture", "planning"],
+    "useCases": [
+      "See all known tech debt by system, impact and effort",
+      "Get a decision on every high-impact debt item",
+      "Revisit accepted debt before it becomes an incident"
+    ]
+  },
+  {
+    "slug": "user-research",
+    "version": "1.0.0",
+    "category": "Product & engineering",
+    "tags": ["user-research", "insights", "interviews", "ux"],
+    "useCases": [
+      "Keep studies, sessions and insights in one searchable place",
+      "Review each insight against its evidence before it is shared",
+      "Follow up on sessions that never got notes"
+    ]
+  },
+  {
+    "slug": "account-planning",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["key-accounts", "account-planning", "stakeholders", "expansion"],
+    "useCases": [
+      "Keep one living plan for every key account",
+      "Map stakeholders and who still needs engaging",
+      "Catch overdue plan actions before the quarterly review"
+    ]
+  },
+  {
+    "slug": "competitive-battlecards",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["competitors", "battlecards", "competitive-intel", "enablement"],
+    "useCases": [
+      "Give reps one current card per competitor",
+      "Collect what reps hear about competitors in deals",
+      "Review cards before they go stale"
+    ]
+  },
+  {
+    "slug": "lead-qualification",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["leads", "qualification", "inbound", "routing"],
+    "useCases": [
+      "Score every inbound lead against the same criteria",
+      "Route hot leads to sales the same day",
+      "See which sources bring leads worth working"
+    ]
+  },
+  {
+    "slug": "outbound-prospecting",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["prospecting", "outbound", "cadences", "sdr"],
+    "useCases": [
+      "Keep every prospect on a planned cadence",
+      "Catch prospects whose next touch has slipped",
+      "Log replies so no warm prospect goes cold"
+    ]
+  },
+  {
+    "slug": "partner-channel",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["partners", "resellers", "deal-registration", "channel"],
+    "useCases": [
+      "Approve partner deal registrations the same way every time",
+      "Expire registrations that have gone quiet",
+      "Resolve channel conflicts before they reach the customer"
+    ]
+  },
+  {
+    "slug": "proposals-quotes",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["proposals", "quotes", "discounts", "pricing"],
+    "useCases": [
+      "Send proposals with line items everyone can check",
+      "Get large discounts approved before the quote goes out",
+      "Expire proposals that pass their valid-until date"
+    ]
+  },
+  {
+    "slug": "sales-call-review",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["call-review", "coaching", "scorecards", "sales-enablement"],
+    "useCases": [
+      "Score sales calls against one shared rubric",
+      "Request coaching as soon as a call scores low",
+      "Track coaching themes for each rep over time"
+    ]
+  },
+  {
+    "slug": "win-loss",
+    "version": "1.0.0",
+    "category": "Sales",
+    "tags": ["win-loss", "buyer-interviews", "deal-analysis", "sales-insights"],
+    "useCases": [
+      "Interview buyers after every important win or loss",
+      "Record the real reasons deals were won or lost",
+      "Spot patterns across closed deals each quarter"
+    ]
+  },
+  {
+    "slug": "customer-onboarding",
+    "version": "1.0.0",
+    "category": "Support & success",
+    "tags": ["customer-onboarding", "implementation", "go-live", "customer-success"],
+    "useCases": [
+      "Run every new customer through a clear onboarding plan",
+      "Spot stalled milestones before go-live slips",
+      "Confirm go-live readiness with a shared checklist"
+    ]
+  },
+  {
+    "slug": "feature-requests",
+    "version": "1.0.0",
+    "category": "Support & success",
+    "tags": ["feature-requests", "customer-feedback", "product-input", "voice-of-customer"],
+    "useCases": [
+      "Capture every feature request with the customers behind it",
+      "Show product the revenue asking for each request",
+      "Close the loop with customers when a decision is made"
+    ]
+  },
+  {
+    "slug": "help-center-articles",
+    "version": "1.0.0",
+    "category": "Support & success",
+    "tags": ["help-center", "knowledge-base", "documentation", "self-service"],
+    "useCases": [
+      "Keep every help article reviewed on a schedule",
+      "Turn reader feedback into article fixes",
+      "See which categories have stale or missing articles"
+    ]
+  },
+  {
+    "slug": "known-issues",
+    "version": "1.0.0",
+    "category": "Support & success",
+    "tags": ["known-issues", "outages", "status-updates", "customer-communication"],
+    "useCases": [
+      "Give support one answer for every known issue",
+      "Know exactly which customers an outage affects",
+      "Keep a timeline of status updates until resolution"
+    ]
+  },
+  {
+    "slug": "nps-feedback",
+    "version": "1.0.0",
+    "category": "Support & success",
+    "tags": ["nps", "customer-feedback", "surveys", "detractors"],
+    "useCases": [
+      "Follow up with every detractor within days",
+      "Group survey comments into themes the team can act on",
+      "See which accounts are promoters or at risk"
+    ]
+  },
+  {
+    "slug": "refund-requests",
+    "version": "1.0.0",
+    "category": "Support & success",
+    "tags": ["refunds", "credits", "approvals", "billing-support"],
+    "useCases": [
+      "Decide refunds and credits against one written policy",
+      "Get approval for refunds over the limit",
+      "Keep an audit trail of every refund decision"
     ]
   }
 ]

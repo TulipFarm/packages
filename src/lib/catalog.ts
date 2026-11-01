@@ -5,7 +5,20 @@ import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 
 export type ResourceKind = 'table' | 'seed-row' | 'skill' | 'agent' | 'workflow' | 'integration' | 'file';
-export type Category = 'Marketing' | 'Sales' | 'Support' | 'HR' | 'Engineering' | 'Product';
+export const categories = [
+  'Agency & client services',
+  'Sales',
+  'Marketing',
+  'Support & success',
+  'Product & engineering',
+  'People & HR',
+  'Operations',
+  'Finance',
+  'IT & security',
+  'Legal & compliance',
+  'Industry',
+] as const;
+export type Category = (typeof categories)[number];
 type Reference = { kind: 'resource'; resourceKind: ResourceKind; key: string };
 type Field = {
   key: string;
@@ -53,7 +66,7 @@ export interface CatalogEntry {
   category: Category;
   tags: string[];
   useCases: string[];
-  detailPath: `/packages/${string}/${string}/`;
+  detailPath: `/packages/${string}/`;
   downloadPath: `/packages/${string}/${string}/package.json`;
   raw: string;
   document: PackageDocument;
@@ -66,9 +79,14 @@ export interface CatalogEntry {
     fields: Array<{ label: string; kind: string; required: boolean }>;
   }>;
   counts: Record<ResourceKind, number>;
+  automations: Array<{ key: string; title: string; when: string; table: string }>;
 }
 const root = resolve(process.cwd());
 const schemaUrl = 'https://tulipfarm.ai/schemas/system-package.v1.json';
+const readOnlyAgentTools = new Set<unknown>(['schema.inspect', 'rows.list', 'rows.get', 'rows.summarize']);
+const workflowTriggers = new Set<unknown>(['manual', 'row', 'record']);
+// Workflows only change rows inside the package's own tables or ask a person; nothing leaves the workspace.
+const workflowSteps = new Set<unknown>(['human', 'agent', 'condition', 'create-row', 'update-row']);
 const hash = (bytes: Uint8Array | string) => createHash('sha256').update(bytes).digest('hex');
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
@@ -189,7 +207,7 @@ function checkDocument(doc: PackageDocument) {
     if (resource.kind === 'agent') {
       const definition = resource.definition as Record<string, unknown>;
       assert(
-        Array.isArray(definition.tools) && definition.tools.every(tool => tool === 'rows.list' || tool === 'rows.get'),
+        Array.isArray(definition.tools) && definition.tools.every(tool => readOnlyAgentTools.has(tool)),
         `Non-read-only assistant tools: ${resource.key}`,
       );
       for (const key of ['scope', 'limits']) {
@@ -212,12 +230,11 @@ function checkDocument(doc: PackageDocument) {
     }
     if (resource.kind === 'workflow') {
       assert(
-        object(resource.trigger) && resource.trigger.kind === 'manual' && resource.requestedState === 'saved',
-        `Expected saved manual workflow: ${resource.key}`,
+        object(resource.trigger) && workflowTriggers.has(resource.trigger.kind) && resource.requestedState === 'saved',
+        `Expected saved manual, row or date workflow: ${resource.key}`,
       );
       assert(
-        Array.isArray(resource.steps) &&
-          resource.steps.every(step => object(step) && (step.kind === 'human' || step.kind === 'agent')),
+        Array.isArray(resource.steps) && resource.steps.every(step => object(step) && workflowSteps.has(step.kind)),
         `Unexpected workflow action: ${resource.key}`,
       );
     }
@@ -277,14 +294,93 @@ function title(resource: PackageResource, doc: PackageDocument): string {
     .map(part => part[0]!.toUpperCase() + part.slice(1))
     .join(' ');
 }
+function describeWorkflow(resource: PackageResource, doc: PackageDocument): string {
+  const trigger = resource.trigger as Record<string, unknown>;
+  if (trigger.kind === 'manual')
+    return 'Manually started review: a person confirms the request, then the read-only assistant prepares recommendations.';
+  const label = (ref: unknown) => {
+    const found = object(ref) ? doc.resources.find(item => item.key === ref.key) : undefined;
+    return found ? title(found, doc) : 'a table';
+  };
+  const table = label(trigger.table);
+  let when = `when a row is created in ${table}`;
+  if (trigger.event === 'updated') when = `when a row in ${table} is updated`;
+  if (trigger.kind === 'record') {
+    const field = trigger.field as { field: string; offset?: { direction: string; amount: number; unit: string } };
+    const source = doc.resources.find(item => item.key === (trigger.table as Reference).key);
+    const name = source?.fields?.find(item => item.key === field.field)?.label ?? field.field;
+    const offset = field.offset
+      ? `${field.offset.amount} ${field.offset.amount === 1 ? field.offset.unit.replace(/s$/, '') : field.offset.unit} ${field.offset.direction}`
+      : 'on';
+    when = `${offset} the ${/date$/i.test(name) ? name : `${name} date`} of a row in ${table}`;
+  }
+  const actions = (resource.steps as Array<Record<string, unknown>>).flatMap(step => {
+    if (step.kind === 'update-row') return [`updates ${label(step.table)}`];
+    if (step.kind === 'create-row') return [`adds a row to ${label(step.table)}`];
+    if (step.kind === 'human') return ['asks a person to decide'];
+    if (step.kind === 'agent') return ['asks the read-only assistant'];
+    return [];
+  });
+  return `Runs ${when}, then ${[...new Set(actions)].join(', ')}.`;
+}
+function automation(resource: PackageResource, doc: PackageDocument) {
+  const trigger = resource.trigger as {
+    kind: string;
+    event?: string;
+    table: Reference;
+    fields?: string[];
+    field?: { field: string; offset?: { direction: string; amount: number; unit: string } };
+    filter?: { match: string; field: string; value: { kind: string; option?: string; value?: unknown } };
+  };
+  const table = doc.resources.find(item => item.key === trigger.table.key)!;
+  const lower = (label: string) => (/^[A-Z][a-z]/.test(label) ? label[0]!.toLowerCase() + label.slice(1) : label);
+  const field = (key: string) => {
+    const found = table.fields?.find(item => item.key === key);
+    return found && { ...found, label: lower(found.label) };
+  };
+  let condition = '';
+  if (trigger.filter) {
+    const target = field(trigger.filter.field);
+    const negated = trigger.filter.match === 'is-not';
+    if (trigger.filter.value.kind === 'boolean')
+      condition = `${target?.label ?? trigger.filter.field} is ${negated === Boolean(trigger.filter.value.value) ? 'not ticked' : 'ticked'}`;
+    else {
+      const option =
+        target?.options?.find(item => item.key === trigger.filter!.value.option)?.label ?? trigger.filter.value.option;
+      condition = `${target?.label ?? trigger.filter.field} ${negated ? 'is not' : 'is'} ${option}`;
+    }
+  }
+  let when: string;
+  if (trigger.kind === 'record') {
+    const name = field(trigger.field!.field)?.label ?? trigger.field!.field;
+    const offset = trigger.field!.offset;
+    const date = /date$/i.test(name) ? name : `${name} date`;
+    when = offset?.amount
+      ? `${offset.amount} ${offset.amount === 1 ? offset.unit.replace(/s$/, '') : offset.unit} ${offset.direction} the ${date}`
+      : `on the ${date}`;
+    if (condition) when += `, if ${condition}`;
+  } else if (trigger.event === 'created')
+    when = condition ? `A new row arrives where ${condition}` : 'A new row arrives';
+  else if (trigger.filter?.value.kind === 'boolean') when = condition;
+  else if (trigger.filter)
+    when = condition.replace(/ (is not|is) /, (_, match: string) =>
+      match === 'is' ? ' changes to ' : ' changes from ',
+    );
+  else when = `${(trigger.fields ?? []).map(key => field(key)?.label ?? key).join(' or ') || 'A row'} changes`;
+  return {
+    key: resource.key,
+    title: title(resource, doc),
+    when: when[0]!.toUpperCase() + when.slice(1),
+    table: title(table, doc),
+  };
+}
 function describe(resource: PackageResource, doc: PackageDocument): string {
   if (resource.kind === 'table')
     return `${resource.fields!.length} fields: ${resource.fields!.map(field => field.label).join(', ')}.`;
   if (resource.kind === 'agent') return resource.definition!.instructions;
   if (resource.kind === 'skill')
     return 'A bundled SKILL.md with domain-specific review steps, evidence rules, and human decision boundaries.';
-  if (resource.kind === 'workflow')
-    return 'Manually started review: a person confirms the request, then the read-only assistant prepares recommendations.';
+  if (resource.kind === 'workflow') return describeWorkflow(resource, doc);
   if (resource.kind === 'seed-row')
     return `Fictional example row in ${title(
       doc.resources.find(item => item.key === resource.table!.key)!,
@@ -296,7 +392,6 @@ export async function loadCatalog(): Promise<CatalogEntry[]> {
   const validate = await validator();
   const metadata: unknown = JSON.parse(await readFile(resolve(root, 'catalog/catalog.json'), 'utf8'));
   assert(Array.isArray(metadata), 'Catalog metadata must be an array');
-  const categories = ['Marketing', 'Sales', 'Support', 'HR', 'Engineering', 'Product'];
   const identities: string[] = [];
   const entries: CatalogEntry[] = [];
   for (const entry of metadata) {
@@ -307,7 +402,10 @@ export async function loadCatalog(): Promise<CatalogEntry[]> {
     );
     assert(typeof entry.slug === 'string' && /^[a-z][a-z0-9-]{0,63}$/.test(entry.slug), 'Invalid catalog slug');
     assert(typeof entry.version === 'string' && /^\d+\.\d+\.\d+$/.test(entry.version), 'Invalid catalog version');
-    assert(typeof entry.category === 'string' && categories.includes(entry.category), 'Invalid category');
+    assert(
+      typeof entry.category === 'string' && (categories as readonly string[]).includes(entry.category),
+      'Invalid category',
+    );
     assert(
       Array.isArray(entry.tags) &&
         entry.tags.length > 0 &&
@@ -369,15 +467,26 @@ export async function loadCatalog(): Promise<CatalogEntry[]> {
       category: entry.category as Category,
       tags: entry.tags,
       useCases: entry.useCases,
-      detailPath: `/packages/${entry.slug}/${entry.version}/`,
+      detailPath: `/packages/${entry.slug}/`,
       downloadPath: `/packages/${entry.slug}/${entry.version}/package.json`,
       raw,
       document: doc,
       resources,
       counts,
+      automations: doc.resources
+        .filter(resource => resource.kind === 'workflow' && (resource.trigger as { kind: string }).kind !== 'manual')
+        .map(resource => automation(resource, doc)),
     });
   }
   unique(identities, 'package identities');
+  const tableOwners = new Map<string, string>();
+  for (const entry of entries)
+    for (const resource of entry.document.resources)
+      if (resource.kind === 'table') {
+        const owner = tableOwners.get(resource.label!);
+        assert(!owner || owner === entry.slug, `Table name ${resource.label} is used by ${owner} and ${entry.slug}`);
+        tableOwners.set(resource.label!, entry.slug);
+      }
   const disk: string[] = [];
   for (const slug of await readdir(resolve(root, 'packages'), { withFileTypes: true })) {
     assert(slug.isDirectory(), `Unexpected packages entry: ${slug.name}`);
@@ -388,4 +497,32 @@ export async function loadCatalog(): Promise<CatalogEntry[]> {
   }
   assert(disk.sort().join('\n') === identities.sort().join('\n'), 'Package directories and catalog identities differ');
   return entries.sort((a, b) => a.slug.localeCompare(b.slug, 'en') || a.version.localeCompare(b.version, 'en'));
+}
+
+const versionParts = (version: string) => version.split(/[.+-]/).map(part => Number.parseInt(part, 10) || 0);
+function newer(a: CatalogEntry, b: CatalogEntry) {
+  const [x, y] = [versionParts(a.version), versionParts(b.version)];
+  for (let index = 0; index < Math.max(x.length, y.length); index++)
+    if ((x[index] ?? 0) !== (y[index] ?? 0)) return (x[index] ?? 0) > (y[index] ?? 0);
+  return false;
+}
+// Each package has one page, showing its newest version; versioned JSON stays at /packages/<slug>/<version>/package.json.
+export function latestEntries(entries: CatalogEntry[]): CatalogEntry[] {
+  const latest = new Map<string, CatalogEntry>();
+  for (const entry of entries) {
+    const current = latest.get(entry.slug);
+    if (!current || newer(entry, current)) latest.set(entry.slug, entry);
+  }
+  return [...latest.values()];
+}
+// Closest packages first: same category, then curated links, then shared tags.
+export function relatedEntries(entry: CatalogEntry, entries: CatalogEntry[], curated: string[], count = 4) {
+  const score = (item: CatalogEntry) =>
+    (item.category === entry.category ? 10 : 0) +
+    (curated.includes(item.slug) ? 6 : 0) +
+    item.tags.filter(tag => entry.tags.includes(tag)).length;
+  return entries
+    .filter(item => item.slug !== entry.slug)
+    .sort((a, b) => score(b) - score(a) || a.slug.localeCompare(b.slug))
+    .slice(0, count);
 }
