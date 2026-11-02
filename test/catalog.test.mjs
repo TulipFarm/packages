@@ -23,10 +23,23 @@ test('public feed and version endpoints preserve the validated source bytes', as
     const item = feed.packages.find(candidate => candidate.name === entry.slug && candidate.version === entry.version);
     assert.ok(item, entry.slug);
     assert.equal(item.title, entry.document.package.title);
-    assert.equal(item.page, entry.detailPath);
     assert.equal(item.url, entry.downloadPath);
     assert.equal(await built(item.url), entry.raw);
   }
+});
+
+test('catalog feed keeps the versioned page links that TulipFarm apps validate', async () => {
+  // Deployed TulipFarm apps (hosted and self-hosted) reject the whole feed unless every
+  // entry's page resolves to /packages/<name>/<version>/ and url to that plus package.json.
+  const feed = JSON.parse(await built('catalog.json'));
+  const catalogUrl = `${origin}/catalog.json`;
+  for (const item of feed.packages) {
+    const base = `${origin}/packages/${item.name}/${item.version}/`;
+    assert.equal(new URL(item.page, catalogUrl).href, base, item.name);
+    assert.equal(new URL(item.url, catalogUrl).href, `${base}package.json`, item.name);
+  }
+  const redirects = await readFile(resolve(root, 'public/_redirects'), 'utf8');
+  assert.match(redirects, /^\/packages\/:slug\/:version\/ \/packages\/:slug\/ 301$/m);
 });
 
 test('details expose real resource groups and exact package chat links without JavaScript', async () => {
