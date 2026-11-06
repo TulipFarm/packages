@@ -1250,7 +1250,7 @@ packages:
       '@tiptap/pm': 3.32.1
 
   '@tulipfarm/sprout@https://github.com/TulipFarm/sprout/releases/download/v0.15.4/tulipfarm-sprout-0.15.4.tgz':
-    resolution: {tarball: https://github.com/TulipFarm/sprout/releases/download/v0.15.4/tulipfarm-sprout-0.15.4.tgz}
+    resolution: {integrity: sha512-5bt492z0pNqY2Zlx5qglHIFj35R4BRa4o0KrU5lQ/z1M5GC0R5A2UWszL8DNTYCpk9Tn9Q43Pwpz7YAFGJE5Ng==, tarball: https://github.com/TulipFarm/sprout/releases/download/v0.15.4/tulipfarm-sprout-0.15.4.tgz}
     version: 0.15.4
     peerDependencies:
       nuqs: ^2.0.0
