@@ -41,7 +41,6 @@ export default function TemplateVisual({ data, large = false }: { data: Template
                 cell: row => row.status && <Badge variant="outline">{row.status}</Badge>,
               },
             ]}
-            variant="plain"
             narrow="stack"
           />
         )}
