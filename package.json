@@ -23,7 +23,7 @@
   "dependencies": {
     "@astrojs/react": "7.1.1",
     "@tailwindcss/vite": "4.3.3",
-    "@tulipfarm/sprout": "0.17.2",
+    "@tulipfarm/sprout": "0.18.0",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "astro": "7.4.2",
